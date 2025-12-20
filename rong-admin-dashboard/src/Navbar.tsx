@@ -6,7 +6,7 @@ import group from "./assets/images/group.png";
 
 export function Navbar() {
   return (
-    <div className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] w-50 h-full border-r-2 border-black flex flex-col items-center gap-6 px-4">
+    <div className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] w-50 h-full shadow-lg flex flex-col items-center gap-6 px-4">
       <img src={rongLogo} alt="Logo" className="w-20 p-3 mt-10"></img>
 
       <div className="flex flex-1 flex-col justify-center gap-2">
