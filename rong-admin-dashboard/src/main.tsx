@@ -6,7 +6,9 @@ import { Table } from "./Table.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Navbar />
-    <Table />
+    <div className="flex h-screen">
+      <Navbar />
+      <Table />
+    </div>
   </StrictMode>
 );
