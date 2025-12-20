@@ -3,7 +3,6 @@ export function TableHeader() {
     <>
       <table className="bg-white w-100 h-10 mt-10">
         <tr className="w-full">
-          <th className="w-[30%]"></th>
           <th>Student ID</th>
           <th>Name</th>
           <th>Phone Number</th>
