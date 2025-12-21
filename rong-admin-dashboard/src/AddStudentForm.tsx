@@ -12,7 +12,14 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [grade, setGrade] = useState("一年级（上）");
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!name.trim() || !phoneNumber.trim() || !grade) {
+      alert("Please fill in all fields");
+      return;
+    }
+
     await fetch(`${API_BASE}/students`, {
       method: "POST",
       headers: {
@@ -35,10 +42,11 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
     <>
       <div className="fixed inset-0 backdrop-blur-lg z-30"></div>
 
-      <div className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <form className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="flex flex-col gap-2 p-5">
           <label>Name</label>
           <input
+            required
             placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -48,6 +56,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
         <div className="flex flex-col gap-2 p-5">
           <label>Phone Number</label>
           <input
+            required
             placeholder="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
@@ -71,6 +80,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
           <button
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] p-4 rounded-4xl w-40 h-10 flex items-center justify-center"
             onClick={handleSubmit}
+            type="submit"
           >
             Add Student
           </button>
@@ -81,7 +91,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
             Close
           </button>
         </div>
-      </div>
+      </form>
     </>
   );
 }
