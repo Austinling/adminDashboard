@@ -3,12 +3,14 @@ import type { Student } from "./StudentType.ts";
 import { useState, useEffect } from "react";
 import { SearchBar } from "./SearchBar.tsx";
 import { Filter } from "./Filter.tsx";
+import { AddStudentButton } from "./AddStudentButton.tsx";
 import { AddStudentForm } from "./AddStudentForm.tsx";
 
 export function FullDataBox() {
   const [students, setStudents] = useState<Student[]>([]);
   const [searchName, setSearch] = useState("");
   const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
+  const [addOpen, setAddOpen] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -29,14 +31,16 @@ export function FullDataBox() {
     <div className="flex flex-col">
       <div className="flex p-5">
         <SearchBar searchName={searchName} searchingChange={setSearch} />
-        <div className="flex justify-end">
+        <div className="flex">
           <Filter
             selectedGrades={selectedGrades}
             setSelectedGrades={setSelectedGrades}
           />
         </div>
+        <div className="flex flex-1"></div>
+        <AddStudentButton onClick={() => setAddOpen(!addOpen)} />
       </div>
-      <AddStudentForm />
+      {addOpen && <AddStudentForm onClick={() => setAddOpen(false)} />}
 
       <Table students={filteredStudents} />
     </div>

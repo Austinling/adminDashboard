@@ -23,7 +23,7 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
   return (
     <div className="w-30 flex items-center justify-center border-2 border-gray-400 z-15 ml-5 rounded-4xl">
       <button
-        className="w-30 flex justify-center items-center text-gray-500"
+        className="w-30 flex justify-center items-center text-gray-500 cursor-pointer"
         onClick={() => setOpen(!open)}
       >
         Filter
