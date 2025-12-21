@@ -28,10 +28,12 @@ export function FullDataBox() {
     <div className="flex flex-col">
       <div className="flex p-5">
         <SearchBar searchName={searchName} searchingChange={setSearch} />
-        <Filter
-          selectedGrades={selectedGrades}
-          setSelectedGrades={setSelectedGrades}
-        />
+        <div className="flex justify-end">
+          <Filter
+            selectedGrades={selectedGrades}
+            setSelectedGrades={setSelectedGrades}
+          />
+        </div>
       </div>
 
       <Table students={filteredStudents} />

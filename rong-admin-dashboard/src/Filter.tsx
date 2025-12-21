@@ -11,17 +11,17 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
   const [open, setOpen] = useState(false);
 
   const filterGrades = (grade: string) => {
-    if (selectedGrades.includes(grade)) {
+    if (selectedGrades.includes(grade) && open) {
       setSelectedGrades(
         selectedGrades.filter((selectedGrade) => selectedGrade !== grade)
       );
     } else {
-      setSelectedGrades([...selectedGrades, grade]);
+      open && setSelectedGrades([...selectedGrades, grade]);
     }
   };
 
   return (
-    <div className="w-30 flex items-center justify-center border-2 border-gray-400 mx-20 rounded-4xl">
+    <div className="w-30 flex items-center justify-center border-2 border-gray-400 z-15 ml-5 rounded-4xl">
       <button
         className="w-30 flex justify-center items-center text-gray-500"
         onClick={() => setOpen(!open)}
@@ -31,7 +31,7 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
       </button>
 
       <div
-        className={`absolute w-50 h-100 bg-white border-2 z-15 top-30 flex flex-col items-center justify-center transform transition-all duration-300 ease-out
+        className={`absolute w-50 h-100 bg-white border-2 top-30 flex flex-col items-center justify-center transform transition-all duration-300 ease-out
       ${
         open
           ? "opacity-100 translate-y-0 scale-100"
