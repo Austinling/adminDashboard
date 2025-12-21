@@ -14,12 +14,14 @@ export function FullDataBox() {
 
   const API_BASE = import.meta.env.VITE_API_BASE;
 
-  useEffect(() => {
+  const fetchStudents = () => {
     fetch(`${API_BASE}/students`)
       .then((res) => res.json())
       .then((data: Student[]) => setStudents(data))
       .catch((err) => console.log(err));
-  }, []);
+  };
+
+  useEffect(fetchStudents, []);
 
   const filteredStudents = students.filter(
     (student) =>
@@ -40,7 +42,12 @@ export function FullDataBox() {
         <div className="flex flex-1"></div>
         <AddStudentButton onClick={() => setAddOpen(!addOpen)} />
       </div>
-      {addOpen && <AddStudentForm onClick={() => setAddOpen(false)} />}
+      {addOpen && (
+        <AddStudentForm
+          onSubmit={fetchStudents}
+          onClick={() => setAddOpen(false)}
+        />
+      )}
 
       <Table students={filteredStudents} />
     </div>

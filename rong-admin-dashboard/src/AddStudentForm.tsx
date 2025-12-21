@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { gradeMap } from "./GradeMap.ts";
 
-export function AddStudentForm({ onClick }: { onClick: () => void }) {
+type StudentForm = {
+  onClick: () => void;
+  onSubmit: () => void;
+};
+
+export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
   const API_BASE = import.meta.env.VITE_API_BASE;
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -23,6 +28,7 @@ export function AddStudentForm({ onClick }: { onClick: () => void }) {
     setName("");
     setPhoneNumber("");
     setGrade("");
+    onSubmit();
   };
 
   return (
