@@ -21,17 +21,17 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
   };
 
   return (
-    <div className="w-40 flex items-center justify-center border-2 mx-20 rounded-4xl">
+    <div className="w-30 flex items-center justify-center border-2 border-gray-400 mx-20 rounded-4xl">
       <button
-        className="w-40 flex justify-center items-center"
+        className="w-30 flex justify-center items-center text-gray-500"
         onClick={() => setOpen(!open)}
       >
-        Filter Grades
+        Filter
         <img src={filter} alt="filter" className="w-5 ml-4"></img>
       </button>
 
       <div
-        className={`absolute w-50 h-100 bg-gray-600 z-15 top-30 flex flex-col items-center justify-center transform transition-all duration-300 ease-out
+        className={`absolute w-50 h-100 bg-white border-2 z-15 top-30 flex flex-col items-center justify-center transform transition-all duration-300 ease-out
       ${
         open
           ? "opacity-100 translate-y-0 scale-100"
@@ -47,6 +47,7 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
                 type="checkbox"
                 checked={checked}
                 onChange={() => filterGrades(key)}
+                className="border-2"
               />
               <span className="text-lg px-3">{value}</span>
             </label>
