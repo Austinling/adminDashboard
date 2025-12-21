@@ -3,6 +3,7 @@ import type { Student } from "./StudentType.ts";
 import { useState, useEffect } from "react";
 import { SearchBar } from "./SearchBar.tsx";
 import { Filter } from "./Filter.tsx";
+import { AddStudentForm } from "./AddStudentForm.tsx";
 
 export function FullDataBox() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -35,6 +36,7 @@ export function FullDataBox() {
           />
         </div>
       </div>
+      <AddStudentForm />
 
       <Table students={filteredStudents} />
     </div>
