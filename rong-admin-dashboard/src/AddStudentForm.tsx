@@ -93,7 +93,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
         <div className="flex-1" />
         <div className="flex justify-evenly mb-5">
           <button
-            className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] p-4 rounded-4xl w-40 h-10 flex items-center justify-center"
+            className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-40 h-10 flex items-center justify-center"
             onClick={handleSubmit}
             type="submit"
           >
@@ -101,7 +101,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
           </button>
           <button
             onClick={onClick}
-            className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] p-4 rounded-4xl w-30 h-10 flex items-center justify-center"
+            className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-30 h-10 flex items-center justify-center"
           >
             Close
           </button>

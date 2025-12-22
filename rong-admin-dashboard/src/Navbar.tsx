@@ -3,6 +3,7 @@ import book from "./assets/images/book-keeping.png";
 import user from "./assets/images/twoUser.png";
 import logOut from "./assets/images/logout.png";
 import group from "./assets/images/group.png";
+import { Link } from "react-router-dom";
 
 export function Navbar() {
   return (
@@ -12,23 +13,23 @@ export function Navbar() {
       <div className="flex flex-1 flex-col justify-center gap-2">
         <div className="flex items-center">
           <img src={user} alt="User" className="w-15 p-3"></img>
-          <a href="" className="text-outline">
+          <Link to="/" className="text-outline">
             Users
-          </a>
+          </Link>
         </div>
 
         <div className="flex items-center">
           <img src={group} alt="User" className="w-15 p-3"></img>
-          <a href="" className="text-outline">
+          <Link to="/teachers" className="text-outline">
             Teachers
-          </a>
+          </Link>
         </div>
 
         <div className="flex items-center">
           <img src={book} alt="Cash" className="w-15 p-3"></img>
-          <a href="" className="text-outline">
+          <Link to="/payments" className="text-outline">
             Payments
-          </a>
+          </Link>
         </div>
       </div>
 
