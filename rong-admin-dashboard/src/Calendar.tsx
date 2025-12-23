@@ -1,7 +1,11 @@
 import { useState } from "react";
 import rightArrow from "./assets/images/right-arrow.png";
 
-export function Calendar() {
+type CalendarType = {
+  open: boolean;
+};
+
+export function Calendar({ open }: CalendarType) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -30,7 +34,14 @@ export function Calendar() {
   }
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-1/2 z-100">
+    <div
+      className={`absolute top-1/2 left-1/2 -translate-1/2 z-100 transform transition-all duration-300 ease-out
+      ${
+        open
+          ? "opacity-100 translate-y-0 scale-100"
+          : "opacity-0 -translate-y-3 scale-95"
+      }`}
+    >
       <div className="w-70 h-10 border-2 text-2xl font-bold grid grid-cols-[40px_1fr_40px] items-center bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)]">
         <button
           onClick={() => setCurrentDate(new Date(year, month - 1, 1))}
