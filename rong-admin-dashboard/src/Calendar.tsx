@@ -1,7 +1,9 @@
 import { useState } from "react";
+import rightArrow from "./assets/images/right-arrow.png";
 
 export function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -16,7 +18,7 @@ export function Calendar() {
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   for (let i = 0; i < getFirstDayOfMonth; i++) {
-    days.push("");
+    days.push(null);
   }
 
   for (let i = 1; i <= daysInMonth; i++) {
@@ -24,15 +26,39 @@ export function Calendar() {
   }
 
   for (let i = 0; i < finalDay; i++) {
-    days.push("");
+    days.push(null);
   }
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-1/2">
-      <div className="w-70 h-10 border-2 text-3xl font-bold flex items-center justify-center">
-        {currentDate.toLocaleDateString("default", { month: "long" })}
+    <div className="absolute top-1/2 left-1/2 -translate-1/2 z-100">
+      <div className="w-70 h-10 border-2 text-2xl font-bold grid grid-cols-[40px_1fr_40px] items-center bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)]">
+        <button
+          onClick={() => setCurrentDate(new Date(year, month - 1, 1))}
+          className="justify-center p-2"
+        >
+          <img
+            src={rightArrow}
+            className="w-5 rotate-180 hover:scale-120 cursor-pointer"
+          ></img>
+        </button>
+        <div className=" text-center ">
+          {currentDate.toLocaleDateString("default", {
+            month: "long",
+            year: "numeric",
+          })}
+        </div>
+        <button
+          onClick={() => setCurrentDate(new Date(year, month + 1, 1))}
+          className="justify-center p-2"
+        >
+          <img
+            src={rightArrow}
+            className="w-5  hover:scale-120 cursor-pointer"
+          ></img>
+        </button>
       </div>
-      <div className="grid grid-cols-7">
+
+      <div className="grid grid-cols-7 bg-white">
         {daysOfWeek.map((day) => (
           <div
             key={day}
@@ -41,14 +67,26 @@ export function Calendar() {
             {day}
           </div>
         ))}
-        {days.map((day, index) => (
-          <div
-            key={index}
-            className="w-10 h-10 border-2 flex items-center justify-center"
-          >
-            {day}
-          </div>
-        ))}
+        {days.map((day, index) => {
+          const dayToSelect =
+            selectedDate &&
+            day === selectedDate.getDate() &&
+            month === selectedDate.getMonth() &&
+            year === selectedDate.getFullYear();
+          return (
+            <div
+              key={index}
+              className={`w-10 h-10 border-2 flex items-center justify-center ${
+                dayToSelect
+                  ? "bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)]"
+                  : ""
+              } ${day ? "hover:scale-120" : ""}`}
+              onClick={() => day && setSelectedDate(new Date(year, month, day))}
+            >
+              {day}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
