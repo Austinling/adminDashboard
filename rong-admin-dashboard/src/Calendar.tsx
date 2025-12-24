@@ -11,9 +11,16 @@ type CalendarType = {
   range: CalendarRange;
   setRange: (range: CalendarRange) => void;
   onClose: () => void;
+  mode: string;
 };
 
-export function Calendar({ open, range, setRange, onClose }: CalendarType) {
+export function Calendar({
+  open,
+  range,
+  setRange,
+  onClose,
+  mode,
+}: CalendarType) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const currentRef = useRef<HTMLDivElement | null>(null);
@@ -43,6 +50,11 @@ export function Calendar({ open, range, setRange, onClose }: CalendarType) {
   }
 
   const handleSelect = (chosenDate: Date) => {
+    if (mode === "single") {
+      setRange({ from: chosenDate, to: undefined });
+      return;
+    }
+
     if (!range.from || (range.from && range.to)) {
       setRange({ from: chosenDate, to: undefined });
       return;
@@ -131,6 +143,7 @@ export function Calendar({ open, range, setRange, onClose }: CalendarType) {
             currentDay.toDateString() === range.to.toDateString();
 
           const inRange =
+            mode === "range" &&
             range.from &&
             range.to &&
             currentDay &&

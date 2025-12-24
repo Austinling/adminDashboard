@@ -39,14 +39,14 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
       }`}
       >
         {Object.entries(gradeMap).map(([key, value]) => {
-          const checked = selectedGrades.includes(key);
+          const checked = selectedGrades.includes(value);
 
           return (
             <label key={key}>
               <input
                 type="checkbox"
                 checked={checked}
-                onChange={() => filterGrades(key)}
+                onChange={() => filterGrades(value)}
                 className="border-2"
               />
               <span className="text-lg px-3">{value}</span>
