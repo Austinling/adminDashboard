@@ -8,6 +8,7 @@ import { Layout } from "./Layout.tsx";
 import { LoginLayout } from "./LoginLayout.tsx";
 import { Login } from "./Login.tsx";
 import "./index.css";
+import { ProtectedRoute } from "./ProtectedRoute.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -17,10 +18,12 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/login" element={<Login />}></Route>
         </Route>
 
-        <Route element={<Layout />}>
-          <Route path="/students" element={<StudentsPage />}></Route>
-          <Route path="/teachers" element={<TeachersPage />}></Route>
-          <Route path="/payments" element={<PaymentsPage />}></Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path="/students" element={<StudentsPage />}></Route>
+            <Route path="/teachers" element={<TeachersPage />}></Route>
+            <Route path="/payments" element={<PaymentsPage />}></Route>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
