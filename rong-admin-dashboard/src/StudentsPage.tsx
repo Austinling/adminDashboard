@@ -73,6 +73,7 @@ export function StudentsPage() {
                   type="checkbox"
                   checked={selectedKeys.includes(s.student_id)}
                   onChange={() => toggleSelect(s.student_id)}
+                  onClick={(e) => e.stopPropagation()}
                 ></input>
 
                 <span>{s.student_id}</span>
@@ -84,6 +85,7 @@ export function StudentsPage() {
           { header: "Grade", render: (s) => s.grade },
         ]}
         selectedKeys={selectedKeys}
+        toggleSelect={toggleSelect}
       />
     </div>
   );

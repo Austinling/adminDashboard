@@ -6,6 +6,7 @@ type TableProps<T> = {
   columns: Column<T>[];
   getKey: (row: T) => number;
   selectedKeys?: number[];
+  toggleSelect?: (id: number) => void;
 };
 
 type Column<T> = {
@@ -18,6 +19,7 @@ export function Table<T>({
   columns,
   getKey,
   selectedKeys,
+  toggleSelect,
 }: TableProps<T>) {
   return (
     <>
@@ -43,6 +45,7 @@ export function Table<T>({
                       ? "bg-gray-200"
                       : ""
                   }`}
+                  onClick={() => toggleSelect?.(getKey(dataPoint))}
                 >
                   {columns.map((column, index) => (
                     <td key={index} className="px-4 py-3 text-center">

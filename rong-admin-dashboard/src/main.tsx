@@ -8,6 +8,7 @@ import { Layout } from "./Layout.tsx";
 import { LoginLayout } from "./LoginLayout.tsx";
 import { Login } from "./Login.tsx";
 import "./index.css";
+import { Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute.tsx";
 
 createRoot(document.getElementById("root")!).render(
@@ -15,6 +16,7 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <Routes>
         <Route element={<LoginLayout />}>
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />}></Route>
         </Route>
 
