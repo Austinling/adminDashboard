@@ -1,0 +1,20 @@
+
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "rong-admin-dashboard",
+	"main": "rong-admin-dashboard/src/index.ts",
+	"compatibility_date": "2025-12-25",
+	"observability": {
+		"enabled": true
+	},  
+	"assets": {
+    	"directory": "src/assets",
+  	},
+	"d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "student-database",
+      "database_id": "ea57c730-ac65-4e30-81e0-3de613f3f637"
+    }
+  ]
+}
