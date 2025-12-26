@@ -22,6 +22,10 @@ type StudentBody = {
   grade: string;
 }
 
+type Ids = {
+  ids: number[]
+}
+
 type PaymentBody = {
   student_id: number;
   paid_for_period: string;
@@ -163,17 +167,18 @@ export default {
 
 	  //DELETE FOR STUDENTS
 
-	if (url.pathname.startsWith("/students") && request.method === "DELETE"){
-        const id = Number(url.pathname.split("/")[2]);
+	if (url.pathname == "/students" && request.method === "DELETE"){
 
-		if (!id){
-			return new Response(JSON.stringify({success: true, message: "Id doesn't exist"}),{status:400, headers:corsHeaders})
-		}
+    const body:Ids = await request.json();
+    const ids = body.ids; 
+
+    const deleteRequest = ids.map(()=> "?").join(",")
+
 
         const deleteResult= await env.DB
 
-        .prepare(`DELETE FROM students WHERE id = ?`)
-        .bind(id)
+        .prepare(`DELETE FROM students WHERE id in ${deleteRequest}`)
+        .bind(...ids)
         .run()
 
         return new Response(JSON.stringify({
