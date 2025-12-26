@@ -2,13 +2,13 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "rong-admin-dashboard",
-	"main": "rong-admin-dashboard/src/index.ts",
+	"main": "src/index.ts",
 	"compatibility_date": "2025-12-25",
 	"observability": {
 		"enabled": true
 	},  
 	"assets": {
-    	"directory": "src/assets",
+    	"directory": "../src/assets",
   	},
 	"d1_databases": [
     {
