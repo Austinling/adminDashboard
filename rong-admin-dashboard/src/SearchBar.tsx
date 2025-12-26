@@ -1,5 +1,4 @@
 import search from "./assets/images/search.png";
-import { useState } from "react";
 
 type searchBarType = {
   searchName: string;

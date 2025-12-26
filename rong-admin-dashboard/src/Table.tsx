@@ -1,6 +1,3 @@
-import { useState, useEffect } from "react";
-import { gradeMap } from "./GradeMap.ts";
-
 type TableProps<T> = {
   data: T[];
   columns: Column<T>[];

@@ -2,7 +2,6 @@ import { Table } from "./Table.tsx";
 import type { Payment } from "./PaymentType.ts";
 import { useState, useEffect } from "react";
 import { SearchBar } from "./SearchBar.tsx";
-import { Filter } from "./Filter.tsx";
 import { AddStudentButton } from "./AddStudentButton.tsx";
 import { AddPayment } from "./AddPayment.tsx";
 import { DeleteButton } from "./DeleteButton.tsx";
