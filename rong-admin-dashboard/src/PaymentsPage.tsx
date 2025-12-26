@@ -16,15 +16,6 @@ export function PaymentsPage() {
 
   const API_BASE = import.meta.env.VITE_API_BASE;
 
-  const tableTitles: String[] = [
-    "Payment ID",
-    "Student Profile",
-    "Paid for Period",
-    "Amount",
-    "Status",
-    "Payment Date",
-  ];
-
   const fetchPayments = () => {
     fetch(`${API_BASE}/payments`)
       .then((res) => res.json())
@@ -57,8 +48,9 @@ export function PaymentsPage() {
         columns={[
           { header: "Payment ID", render: (p) => p.payment_id },
           { header: "Student ID", render: (p) => p.student_id },
-          { header: "Name", render: (p) => p.paid_for_period },
-          { header: "Amount", render: (p) => p.amount },
+          { header: "Student", render: (p) => p.student },
+          { header: "Payment Period", render: (p) => p.paid_for_period },
+          { header: "Amount (MMK)", render: (p) => p.amount },
           { header: "Status", render: (p) => p.status },
           { header: "Payment Date", render: (p) => p.payment_date },
         ]}

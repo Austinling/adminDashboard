@@ -83,6 +83,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
         amount,
         status,
         payment_date,
+        student: selectedStudent.name + " - " + selectedStudent.grade,
       }),
     });
 
@@ -155,7 +156,8 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
                   <li
                     key={student.student_id}
                     className="p-2 hover:bg-gray-200 cursor-pointer"
-                    onClick={() => {
+                    onMouseDown={(e) => {
+                      e.preventDefault();
                       setSelectedStudent(student);
                       setUserInput(
                         `${student.name} - ${student.grade} (${student.student_id})`
@@ -236,6 +238,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
             Add Payment
           </button>
           <button
+            type="button"
             onClick={onClick}
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-30 h-10 flex items-center justify-center"
           >

@@ -4,5 +4,6 @@ export type Payment = {
     paid_for_period: string,
     amount: string,
     status: string,
-    payment_date : string
+    payment_date : string,
+    student: string
 }

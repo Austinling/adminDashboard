@@ -7,6 +7,7 @@ type Calendar = {
 export function CalendarButton({ onClick }: Calendar) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className="flex items-center justify-center gap-4 border-2 rounded-2xl w-50 p-3"
     >

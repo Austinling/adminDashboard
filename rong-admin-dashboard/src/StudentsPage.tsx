@@ -29,8 +29,6 @@ export function StudentsPage() {
       (selectedGrades.length === 0 || selectedGrades.includes(student.grade))
   );
 
-  console.log(selectedGrades);
-
   return (
     <div className="flex flex-col">
       <div className="flex p-5">

@@ -13,7 +13,7 @@ export function Navbar() {
       <div className="flex flex-1 flex-col justify-center gap-2">
         <div className="flex items-center">
           <img src={user} alt="User" className="w-15 p-3"></img>
-          <Link to="/" className="text-outline">
+          <Link to="/students" className="text-outline">
             Users
           </Link>
         </div>
