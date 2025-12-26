@@ -37,7 +37,7 @@ export default {
     const corsHeaders = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "*"
     }
 
@@ -157,6 +157,28 @@ export default {
         return new Response(JSON.stringify({
           success: true,
           student_id: postResult.meta.last_row_id}),
+          {headers: corsHeaders}
+        );
+      }
+
+	  //DELETE FOR STUDENTS
+
+	if (url.pathname.startsWith("/students") && request.method === "DELETE"){
+        const id = Number(url.pathname.split("/")[2]);
+
+		if (!id){
+			return new Response(JSON.stringify({success: true, message: "Id doesn't exist"}),{status:400, headers:corsHeaders})
+		}
+
+        const deleteResult= await env.DB
+
+        .prepare(`DELETE FROM students WHERE id = ?`)
+        .bind(id)
+        .run()
+
+        return new Response(JSON.stringify({
+          success: true,
+          student_id: deleteResult.meta.changes}),
           {headers: corsHeaders}
         );
       }

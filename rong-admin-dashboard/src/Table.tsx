@@ -5,6 +5,7 @@ type TableProps<T> = {
   data: T[];
   columns: Column<T>[];
   getKey: (row: T) => number;
+  selectedKeys?: number[];
 };
 
 type Column<T> = {
@@ -12,7 +13,12 @@ type Column<T> = {
   render: (row: T) => React.ReactNode;
 };
 
-export function Table<T>({ data, columns, getKey }: TableProps<T>) {
+export function Table<T>({
+  data,
+  columns,
+  getKey,
+  selectedKeys,
+}: TableProps<T>) {
   return (
     <>
       <div className="overflow-auto max-h-130">
@@ -28,15 +34,24 @@ export function Table<T>({ data, columns, getKey }: TableProps<T>) {
           </thead>
 
           <tbody>
-            {data.map((dataPoint) => (
-              <tr key={getKey(dataPoint)} className="w-full">
-                {columns.map((column, index) => (
-                  <td key={index} className="px-4 py-3 text-center">
-                    {column.render(dataPoint)}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {data.map((dataPoint) => {
+              return (
+                <tr
+                  key={getKey(dataPoint)}
+                  className={`w-full transition-colors duration-150 ${
+                    selectedKeys?.includes(getKey(dataPoint))
+                      ? "bg-gray-200"
+                      : ""
+                  }`}
+                >
+                  {columns.map((column, index) => (
+                    <td key={index} className="px-4 py-3 text-center">
+                      {column.render(dataPoint)}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

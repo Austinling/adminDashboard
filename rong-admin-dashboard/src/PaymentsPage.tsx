@@ -13,8 +13,17 @@ export function PaymentsPage() {
   const [status, setStatus] = useState("");
   const [paymentDate, setPaymentDate] = useState("");
   const [open, setPaymentOpen] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
+
+  function toggleSelect(id: number) {
+    setSelectedKeys((selectedIds) =>
+      selectedIds.includes(id)
+        ? selectedIds.filter((filteredId) => filteredId != id)
+        : [...selectedIds, id]
+    );
+  }
 
   const fetchPayments = () => {
     fetch(`${API_BASE}/payments`)
@@ -54,6 +63,8 @@ export function PaymentsPage() {
           { header: "Status", render: (p) => p.status },
           { header: "Payment Date", render: (p) => p.payment_date },
         ]}
+        selectedKeys={selectedKeys}
+        onToggleSelect={toggleSelect}
       />{" "}
     </div>
   );

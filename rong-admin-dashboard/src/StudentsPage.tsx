@@ -11,8 +11,17 @@ export function StudentsPage() {
   const [searchName, setSearch] = useState("");
   const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
   const [addOpen, setAddOpen] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
+
+  function toggleSelect(id: number) {
+    setSelectedKeys((selectedIds) =>
+      selectedIds.includes(id)
+        ? selectedIds.filter((filteredId) => filteredId != id)
+        : [...selectedIds, id]
+    );
+  }
 
   const fetchStudents = () => {
     fetch(`${API_BASE}/students`)
@@ -56,11 +65,25 @@ export function StudentsPage() {
         data={filteredStudents}
         getKey={(s) => s.student_id}
         columns={[
-          { header: "Student ID", render: (s) => s.student_id },
+          {
+            header: "Student ID",
+            render: (s) => (
+              <div className="flex items-center justify-center gap-10">
+                <input
+                  type="checkbox"
+                  checked={selectedKeys.includes(s.student_id)}
+                  onChange={() => toggleSelect(s.student_id)}
+                ></input>
+
+                <span>{s.student_id}</span>
+              </div>
+            ),
+          },
           { header: "Name", render: (s) => s.name },
           { header: "Phone Number", render: (s) => s.phoneNumber },
           { header: "Grade", render: (s) => s.grade },
         ]}
+        selectedKeys={selectedKeys}
       />
     </div>
   );
