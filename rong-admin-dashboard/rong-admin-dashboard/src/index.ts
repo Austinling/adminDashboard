@@ -172,12 +172,19 @@ export default {
     const body:Ids = await request.json();
     const ids = body.ids; 
 
+    if (!Array.isArray(ids) || ids.length ===0){
+      return new Response(JSON.stringify({
+        success:false,
+        message: "No IDs given",
+      }),{headers:corsHeaders})
+    }
+
     const deleteRequest = ids.map(()=> "?").join(",")
 
 
         const deleteResult= await env.DB
 
-        .prepare(`DELETE FROM students WHERE id in ${deleteRequest}`)
+        .prepare(`DELETE FROM students WHERE student_id in (${deleteRequest})`)
         .bind(...ids)
         .run()
 
@@ -229,6 +236,36 @@ export default {
         return new Response(JSON.stringify({
           success: true,
           payment_id: postResult.meta.last_row_id}),
+          {headers: corsHeaders}
+        );
+      }
+
+  //DELETE FOR Payments
+
+	if (url.pathname == "/payments" && request.method === "DELETE"){
+
+    const body:Ids = await request.json();
+    const ids = body.ids; 
+
+    if (!Array.isArray(ids) || ids.length ===0){
+      return new Response(JSON.stringify({
+        success:false,
+        message: "No IDs given",
+      }),{headers:corsHeaders})
+    }
+
+    const deleteRequest = ids.map(()=> "?").join(",")
+
+
+        const deleteResult= await env.DB
+
+        .prepare(`DELETE FROM payments WHERE payment_id in (${deleteRequest})`)
+        .bind(...ids)
+        .run()
+
+        return new Response(JSON.stringify({
+          success: true,
+          student_id: deleteResult.meta.changes}),
           {headers: corsHeaders}
         );
       }

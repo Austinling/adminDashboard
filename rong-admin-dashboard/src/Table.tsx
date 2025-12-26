@@ -7,6 +7,7 @@ type TableProps<T> = {
   getKey: (row: T) => number;
   selectedKeys?: number[];
   toggleSelect?: (id: number) => void;
+  isDelete: boolean;
 };
 
 type Column<T> = {
@@ -20,6 +21,7 @@ export function Table<T>({
   getKey,
   selectedKeys,
   toggleSelect,
+  isDelete,
 }: TableProps<T>) {
   return (
     <>
@@ -41,11 +43,11 @@ export function Table<T>({
                 <tr
                   key={getKey(dataPoint)}
                   className={`w-full transition-colors duration-150 ${
-                    selectedKeys?.includes(getKey(dataPoint))
+                    isDelete && selectedKeys?.includes(getKey(dataPoint))
                       ? "bg-gray-200"
                       : ""
                   }`}
-                  onClick={() => toggleSelect?.(getKey(dataPoint))}
+                  onClick={() => isDelete && toggleSelect?.(getKey(dataPoint))}
                 >
                   {columns.map((column, index) => (
                     <td key={index} className="px-4 py-3 text-center">

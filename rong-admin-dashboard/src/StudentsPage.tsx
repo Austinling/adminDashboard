@@ -5,6 +5,7 @@ import { SearchBar } from "./SearchBar.tsx";
 import { Filter } from "./Filter.tsx";
 import { AddStudentButton } from "./AddStudentButton.tsx";
 import { AddStudentForm } from "./AddStudentForm.tsx";
+import { DeleteButton } from "./DeleteButton.tsx";
 
 export function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -12,6 +13,7 @@ export function StudentsPage() {
   const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
   const [addOpen, setAddOpen] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
+  const [isDelete, setDelete] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -28,6 +30,22 @@ export function StudentsPage() {
       .then((res) => res.json())
       .then((data: Student[]) => setStudents(data))
       .catch((err) => console.log(err));
+  };
+
+  const deleteStudents = async () => {
+    if (selectedKeys.length === 0) return;
+
+    await fetch(`${API_BASE}/students`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ids: selectedKeys,
+      }),
+    });
+
+    fetchStudents();
   };
 
   useEffect(fetchStudents, []);
@@ -49,10 +67,20 @@ export function StudentsPage() {
           />
         </div>
         <div className="flex flex-1"></div>
-        <AddStudentButton
-          onClick={() => setAddOpen(!addOpen)}
-          message="Add Button"
-        />
+        <div className="flex flex-row gap-3">
+          <AddStudentButton
+            onClick={() => setAddOpen(!addOpen)}
+            message="Add Button"
+          />
+          <DeleteButton
+            onClick={() => {
+              deleteStudents();
+              setDelete(!isDelete);
+              setSelectedKeys([]);
+            }}
+            isOn={isDelete}
+          />
+        </div>
       </div>
       {addOpen && (
         <AddStudentForm
@@ -69,12 +97,14 @@ export function StudentsPage() {
             header: "Student ID",
             render: (s) => (
               <div className="flex items-center justify-center gap-10">
-                <input
-                  type="checkbox"
-                  checked={selectedKeys.includes(s.student_id)}
-                  onChange={() => toggleSelect(s.student_id)}
-                  onClick={(e) => e.stopPropagation()}
-                ></input>
+                {isDelete && (
+                  <input
+                    type="checkbox"
+                    checked={selectedKeys.includes(s.student_id)}
+                    onChange={() => isDelete && toggleSelect(s.student_id)}
+                    onClick={(e) => e.stopPropagation()}
+                  ></input>
+                )}
 
                 <span>{s.student_id}</span>
               </div>
@@ -86,6 +116,7 @@ export function StudentsPage() {
         ]}
         selectedKeys={selectedKeys}
         toggleSelect={toggleSelect}
+        isDelete={isDelete}
       />
     </div>
   );
