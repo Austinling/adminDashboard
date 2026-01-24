@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT} from "jose";
 
 type Env = {
   DB: D1Database; // Cloudflare D1 binding
