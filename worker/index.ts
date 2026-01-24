@@ -272,14 +272,8 @@ export default {
         );
       }
 
-return new Response(JSON.stringify({ 
-  message: "Worker reached, but no route matched.",
-  debug: {
-    requestedPath: url.pathname,
-    requestedMethod: request.method,
-    availableRoutes: ["/login", "/students", "/admin/create_user"]
-  }
-}), { status: 404, headers: corsHeaders });
+      return new Response("Not Found", { status: 404, headers: corsHeaders});
+
     }catch (error: any){
       return new Response(
         JSON.stringify({ error: error.message}),
