@@ -22,8 +22,8 @@ export function Table<T>({
 }: TableProps<T>) {
   return (
     <>
-      <div className="overflow-x-auto overflow-y-auto max-h-130 min-w-0">
-        <table className="bg-white w-full">
+      <div className="overflow-x-auto overflow-y-auto max-h-130 w-full ">
+        <table className="bg-white w-full min-w-[800px]">
           <thead className="sticky top-0 z-10 bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)]">
             <tr>
               {columns.map((column, index) => (

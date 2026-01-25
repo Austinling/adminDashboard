@@ -13,7 +13,7 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
   const filterGrades = (grade: string) => {
     if (selectedGrades.includes(grade) && open) {
       setSelectedGrades(
-        selectedGrades.filter((selectedGrade) => selectedGrade !== grade)
+        selectedGrades.filter((selectedGrade) => selectedGrade !== grade),
       );
     } else {
       open && setSelectedGrades([...selectedGrades, grade]);
@@ -21,9 +21,9 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
   };
 
   return (
-    <div className="w-30 flex items-center justify-center border-2 border-gray-400 z-15 ml-5 rounded-4xl">
+    <div className="relative w-30 flex items-center justify-center border-2 border-gray-400 ml-5 rounded-4xl">
       <button
-        className="w-30 flex justify-center items-center text-gray-500 cursor-pointer"
+        className="w-30 flex justify-center items-center text-gray-500 cursor-pointer relative z-10"
         onClick={() => setOpen(!open)}
       >
         Filter
@@ -31,11 +31,11 @@ export function Filter({ selectedGrades, setSelectedGrades }: FilterProps) {
       </button>
 
       <div
-        className={`absolute w-50 h-100 bg-white border-2 top-30 flex flex-col items-center justify-center transform transition-all duration-300 ease-out
+        className={`absolute w-50 h-100 bg-white border-2 top-10 flex flex-col items-center justify-center transform transition-all duration-300 ease-out z-50
       ${
         open
-          ? "opacity-100 translate-y-0 scale-100"
-          : "opacity-0 -translate-y-3 scale-95"
+          ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+          : "opacity-0 -translate-y-3 scale-95 pointer-events-none"
       }`}
       >
         {Object.entries(gradeMap).map(([key, value]) => {
