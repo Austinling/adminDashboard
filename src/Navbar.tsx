@@ -1,8 +1,8 @@
 import rongLogo from "./assets/images/rongbg.png";
-import book from "./assets/images/book-keeping.png";
-import user from "./assets/images/twoUser.png";
-import logOut from "./assets/images/logout.png";
-import group from "./assets/images/group.png";
+import { UsersRound, Wallet } from "lucide-react";
+import { WalletCards } from "lucide-react";
+import { GraduationCap } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 
 type Navbar = {
@@ -11,36 +11,55 @@ type Navbar = {
 
 export function Navbar({ onClick }: Navbar) {
   return (
-    <div className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] w-50 h-full shadow-lg flex flex-col items-center gap-6 px-4">
-      <img src={rongLogo} alt="Logo" className="w-20 p-3 mt-10"></img>
-      <div className="flex flex-1 flex-col justify-center gap-2">
-        <div className="flex items-center">
-          <img src={user} alt="User" className="w-15 p-3"></img>
-          <Link to="/students" className="text-outline">
-            Users
-          </Link>
-        </div>
+    <div className="bg-red-300 w-50 h-full shadow-lg flex flex-col gap-6">
+      <img src={rongLogo} alt="Logo" className="w-20 p-3 mt-10 mx-auto"></img>
+      <div className="flex flex-1 flex-col w-50 justify-center gap-5">
+        <Link
+          to="/students"
+          className=" flex h-10 items-center group hover:bg-white justify-center"
+        >
+          <div className="w-12 flex justify-center">
+            <UsersRound className="w-8 h-8 text-white group-hover:text-red-300" />
+          </div>
+          <div className="text-white diphylleia-regular text-1xl group-hover:text-red-300">
+            Students
+          </div>
+        </Link>
 
-        <div className="flex items-center">
-          <img src={group} alt="User" className="w-15 p-3"></img>
-          <Link to="/teachers" className="text-outline">
+        <Link
+          to="/teachers"
+          className=" flex h-10 items-center group hover:bg-white justify-center"
+        >
+          <div className="w-12 flex justify-center">
+            <GraduationCap className="w-8 h-8 text-white group-hover:text-red-300" />
+          </div>
+          <div className="text-white diphylleia-regular text-1xl group-hover:text-red-300">
             Teachers
-          </Link>
-        </div>
+          </div>
+        </Link>
 
-        <div className="flex items-center">
-          <img src={book} alt="Cash" className="w-15 p-3"></img>
-          <Link to="/payments" className="text-outline">
+        <Link
+          to="/payments"
+          className=" flex h-10 items-center group hover:bg-white justify-center"
+        >
+          <div className="w-12 flex justify-center">
+            <WalletCards className="w-8 h-8 text-white group-hover:text-red-300" />
+          </div>
+          <div className="text-white diphylleia-regular text-1xl group-hover:text-red-300">
             Payments
-          </Link>
-        </div>
+          </div>
+        </Link>
       </div>
       <button
         onClick={onClick}
         className="text-outline cursor-pointer flex items-center justify-center"
       >
-        <img src={logOut} alt="User" className="w-13 p-3"></img>
-        Logout
+        <div className="flex gap-3 mb-5 group hover:bg-white w-full justify-center items-center h-10 ">
+          <LogOut className="w-8 h-8 text-white group-hover:text-red-300" />
+          <div className="text-white group-hover:text-red-300 diphylleia-regular text-1xl">
+            Logout
+          </div>
+        </div>
       </button>
     </div>
   );

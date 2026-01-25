@@ -1,8 +1,7 @@
 @import "tailwindcss";
 
 .text-outline {
-  -webkit-text-stroke: 0.5px white; 
-  color: black;
+  color:white;
   font-size: 20px;
   
 }
@@ -14,4 +13,10 @@ table, th, td {
 
 tr:hover {
   background-color: lightgrey;
+}
+
+.diphylleia-regular {
+  font-family: "Diphylleia", serif;
+  font-weight: 400;
+  font-style: normal;
 }
