@@ -1,4 +1,3 @@
-import rongLogo from "./assets/images/rongbg.png";
 import { UsersRound, Wallet } from "lucide-react";
 import { WalletCards } from "lucide-react";
 import { GraduationCap } from "lucide-react";
@@ -7,12 +6,16 @@ import { Link } from "react-router-dom";
 
 type Navbar = {
   onClick: () => void;
+  navBarShow: boolean;
 };
 
-export function Navbar({ onClick }: Navbar) {
+export function Navbar({ onClick, navBarShow }: Navbar) {
+  if (!navBarShow) {
+    return null;
+  }
+
   return (
-    <div className="bg-red-300 w-50 h-full shadow-lg flex flex-col gap-6">
-      <img src={rongLogo} alt="Logo" className="w-20 p-3 mt-10 mx-auto"></img>
+    <div className="bg-red-300 w-50 flex shadow-lg flex-col gap-6 mr-10">
       <div className="flex flex-1 flex-col w-50 justify-center gap-5">
         <Link
           to="/students"

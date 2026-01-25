@@ -21,7 +21,7 @@ export function StudentsPage() {
     setSelectedKeys((selectedIds) =>
       selectedIds.includes(id)
         ? selectedIds.filter((filteredId) => filteredId != id)
-        : [...selectedIds, id]
+        : [...selectedIds, id],
     );
   }
 
@@ -36,7 +36,7 @@ export function StudentsPage() {
     if (selectedKeys.length === 0) return;
 
     let userResponse = confirm(
-      "Are you sure you want to delete?\nPress OK or Cancel."
+      "Are you sure you want to delete?\nPress OK or Cancel.",
     );
 
     if (!userResponse) {
@@ -61,7 +61,7 @@ export function StudentsPage() {
   const filteredStudents = students.filter(
     (student) =>
       student.name.toLowerCase().includes(searchName.toLowerCase()) &&
-      (selectedGrades.length === 0 || selectedGrades.includes(student.grade))
+      (selectedGrades.length === 0 || selectedGrades.includes(student.grade)),
   );
 
   return (

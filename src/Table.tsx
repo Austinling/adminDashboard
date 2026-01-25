@@ -22,12 +22,12 @@ export function Table<T>({
 }: TableProps<T>) {
   return (
     <>
-      <div className="overflow-x-auto overflow-y-auto max-h-130">
-        <table className="bg-white w-full table-fixed ">
+      <div className="overflow-x-auto overflow-y-auto max-h-130 min-w-0">
+        <table className="bg-white w-full">
           <thead className="sticky top-0 z-10 bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)]">
             <tr>
               {columns.map((column, index) => (
-                <th key={index} className={`w-1/${columns.length} px-4 py-6`}>
+                <th key={index} className="px-4 py-6">
                   {column.header}
                 </th>
               ))}
