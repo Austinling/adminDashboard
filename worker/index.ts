@@ -1,4 +1,4 @@
-import { SignJWT} from "jose";
+import { SignJWT,jwtVerify} from "jose";
 
 type Env = {
   DB: D1Database; // Cloudflare D1 binding
@@ -63,10 +63,27 @@ export default {
         return Array.from(new Uint8Array(hashCode)).map((b) => b.toString(16).padStart(2,"0")).join("");
       }
 
-	  async function createJWTToken(username: string, env: Env):Promise<string>{ 
+      async function verifyToken(req:Request,env: Env){
+        const authHeader = req.headers.get("Authorization");
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")){
+          throw new Error("Missing or invalid Authorization header");
+        }
+
+        const token = authHeader.split(" ")[1];
+        const encodedSecret = new TextEncoder().encode(env.JWT_SECRET);
+
+        const payload = (await jwtVerify(token,encodedSecret)).payload;
+
+        return payload as { username: string; role: string };
+        
+      }
+
+
+	  async function createJWTToken(username: string, role: string, env: Env):Promise<string>{ 
 		const encodedToken = new TextEncoder().encode(env.JWT_SECRET); 
 		
-		return await new SignJWT({username}) 
+		return await new SignJWT({username,role}) 
 		.setProtectedHeader({alg: "HS256"}) 
 		.setExpirationTime("2h") 
 		.sign(encodedToken); }
@@ -115,11 +132,10 @@ export default {
         .bind(email,password_hash)
         .all();
 
-		const token = await createJWTToken(email,env)
+		const token = await createJWTToken(email,loginResult.results[0].role as string,env)
 
         if (loginResult.results.length === 0){
           return new Response(JSON.stringify({
-			password_hash:password_hash,
             success: false,
             message: "Login Unsuccesful"
           }),{headers:corsHeaders});
@@ -128,7 +144,8 @@ export default {
 		return new Response(JSON.stringify({
 			token: token,
             success: true,
-            message: "Login Succesful"
+            message: "Login Succesful",
+            role: loginResult.results[0].role,
           }),{headers:corsHeaders});
 
 
@@ -170,6 +187,14 @@ export default {
 	  //DELETE FOR STUDENTS
 
 	if (url.pathname == "/students" && request.method === "DELETE"){
+
+    const payload = await verifyToken(request,env);
+
+    console.log("Current User Payload:", payload);
+
+    if (payload.role !== "admin") {
+      throw new Error("Forbidden: You aren't an admin");
+    }
 
     const body:Ids = await request.json();
     const ids = body.ids; 
@@ -245,6 +270,12 @@ export default {
   //DELETE FOR Payments
 
 	if (url.pathname == "/payments" && request.method === "DELETE"){
+
+    const payload = await verifyToken(request,env);
+
+    if (payload.role !== "admin") {
+      throw new Error("Forbidden: You aren't an admin");
+    }
 
     const body:Ids = await request.json();
     const ids = body.ids; 

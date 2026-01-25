@@ -1,7 +1,4 @@
-import { UsersRound, Wallet } from "lucide-react";
-import { WalletCards } from "lucide-react";
-import { GraduationCap } from "lucide-react";
-import { LogOut } from "lucide-react";
+import { UsersRound, WalletCards, GraduationCap, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 
 type Navbar = {

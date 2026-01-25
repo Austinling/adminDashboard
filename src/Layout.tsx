@@ -19,7 +19,7 @@ export function Layout() {
           navBarShow={headerShow}
         />
         <div className="flex-1 overflow-auto p-4">
-          <div className="bg-white h-full min-w-[800px] max-w-[1200px] mx-auto max-h-full border-0 shadow-lg rounded-xl overflow-auto">
+          <div className="bg-white h-full min-w-200 max-w-300 mx-auto max-h-full border-0 shadow-lg rounded-xl overflow-auto">
             <Outlet />
           </div>
         </div>

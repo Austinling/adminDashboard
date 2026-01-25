@@ -1,6 +1,7 @@
 import { Table } from "./Table.tsx";
 import type { Student } from "./StudentType.ts";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { SearchBar } from "./SearchBar.tsx";
 import { Filter } from "./Filter.tsx";
 import { AddStudentButton } from "./AddStudentButton.tsx";
@@ -16,6 +17,7 @@ export function StudentsPage() {
   const [isDelete, setDelete] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
+  const navigate = useNavigate();
 
   function toggleSelect(id: number) {
     setSelectedKeys((selectedIds) =>
@@ -25,15 +27,33 @@ export function StudentsPage() {
     );
   }
 
-  const fetchStudents = () => {
-    fetch(`${API_BASE}/students`)
-      .then((res) => res.json())
-      .then((data: Student[]) => setStudents(data))
-      .catch((err) => console.log(err));
+  const fetchStudents = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(`${API_BASE}/students`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 401) {
+        navigate("/login");
+        return;
+      }
+
+      const data = await res.json();
+      setStudents(data);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
   };
 
   const deleteStudents = async () => {
-    if (selectedKeys.length === 0) return;
+    if (selectedKeys.length === 0) {
+      setDelete(false);
+      return;
+    }
 
     let userResponse = confirm(
       "Are you sure you want to delete?\nPress OK or Cancel.",
@@ -43,20 +63,36 @@ export function StudentsPage() {
       return;
     }
 
-    await fetch(`${API_BASE}/students`, {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE}/students`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         ids: selectedKeys,
       }),
     });
 
-    fetchStudents();
+    if (res.status === 401) {
+      alert("Session expired! Please login again.");
+      localStorage.removeItem("token");
+      navigate("/login");
+      return;
+    }
+
+    if (res.ok) {
+      fetchStudents();
+      setSelectedKeys([]);
+      setDelete(false);
+    }
   };
 
-  useEffect(fetchStudents, []);
+  useEffect(() => {
+    fetchStudents();
+  }, []);
 
   const filteredStudents = students.filter(
     (student) =>
@@ -82,9 +118,11 @@ export function StudentsPage() {
           />
           <DeleteButton
             onClick={() => {
-              deleteStudents();
-              setDelete(!isDelete);
-              setSelectedKeys([]);
+              if (isDelete) {
+                deleteStudents();
+              } else {
+                setDelete(true);
+              }
             }}
             isOn={isDelete}
           />
