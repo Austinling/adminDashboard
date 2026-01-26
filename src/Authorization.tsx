@@ -1,7 +1,15 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
+import type { ReactNode } from "react";
 
-type User = {
-  role: "user" | "admin" | null;
+type Role = {
+  role: string | null;
+  setRole: (userRole: string | null) => void;
 };
 
-export const UserContext = createContext<User | null>(null);
+export const UserContext = createContext<Role | undefined>(undefined);
+
+export function ContainerContext({ children }: { children: ReactNode }) {
+  const [role, setRole] = useState<string | null>(localStorage.getItem("role"));
+
+  return <UserContext value={{ role, setRole }}>{children}</UserContext>;
+}
