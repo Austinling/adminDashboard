@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "./Authorization";
 
 export function Login() {
   const API_BASE = import.meta.env.VITE_API_BASE;
@@ -8,6 +9,7 @@ export function Login() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const userContext = useContext(UserContext);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -31,6 +33,9 @@ export function Login() {
     }
 
     localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+
+    userContext?.setRole(data.role);
 
     navigate("/students");
   }

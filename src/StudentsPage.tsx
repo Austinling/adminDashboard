@@ -1,6 +1,7 @@
 import { Table } from "./Table.tsx";
 import type { Student } from "./StudentType.ts";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "./Authorization.tsx";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "./SearchBar.tsx";
 import { Filter } from "./Filter.tsx";
@@ -18,6 +19,8 @@ export function StudentsPage() {
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
+
+  const userRole = useContext(UserContext);
 
   function toggleSelect(id: number) {
     setSelectedKeys((selectedIds) =>
@@ -116,16 +119,18 @@ export function StudentsPage() {
             onClick={() => setAddOpen(!addOpen)}
             message="Add Button"
           />
-          <DeleteButton
-            onClick={() => {
-              if (isDelete) {
-                deleteStudents();
-              } else {
-                setDelete(true);
-              }
-            }}
-            isOn={isDelete}
-          />
+          {userRole?.role === "admin" && (
+            <DeleteButton
+              onClick={() => {
+                if (isDelete) {
+                  deleteStudents();
+                } else {
+                  setDelete(true);
+                }
+              }}
+              isOn={isDelete}
+            />
+          )}
         </div>
       </div>
       {addOpen && (

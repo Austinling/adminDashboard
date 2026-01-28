@@ -40,8 +40,15 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
   useEffect(fetchStudents, []);
 
   const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(userInput.toLowerCase())
+    student.name.toLowerCase().includes(userInput.toLowerCase()),
   );
+
+  const formatToISO = (date: Date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,14 +108,12 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
     }
 
     if (calendarMode === "single" && calendarRange.from) {
-      setPaymentDate(calendarRange.from.toLocaleDateString());
+      setPaymentDate(formatToISO(calendarRange.from));
     }
 
     if (calendarMode === "range" && calendarRange.to) {
       setPeriod(
-        calendarRange.from.toLocaleDateString() +
-          "-" +
-          calendarRange.to.toLocaleDateString()
+        `${formatToISO(calendarRange.from)}-${formatToISO(calendarRange.to)}`,
       );
     }
   }, [calendarRange, calendarMode]);
@@ -164,7 +169,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
                       e.preventDefault();
                       setSelectedStudent(student);
                       setUserInput(
-                        `${student.name} - ${student.grade} (${student.student_id})`
+                        `${student.name} - ${student.grade} (${student.student_id})`,
                       );
                     }}
                   >{`${student.name} - ${student.grade} (${student.student_id})`}</li>

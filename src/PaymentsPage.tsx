@@ -1,10 +1,12 @@
 import { Table } from "./Table.tsx";
 import type { Payment } from "./PaymentType.ts";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "./Authorization.tsx";
 import { SearchBar } from "./SearchBar.tsx";
 import { AddStudentButton } from "./AddStudentButton.tsx";
 import { AddPayment } from "./AddPayment.tsx";
 import { DeleteButton } from "./DeleteButton.tsx";
+import { PaymentFilter } from "./PaymentFilter.tsx";
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -12,15 +14,35 @@ export function PaymentsPage() {
   const [open, setPaymentOpen] = useState(false);
   const [isDelete, setDelete] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
+  const [paymentStatus, setPaymentStatus] = useState<string>("");
+  const [calendarRange, setCalendarRange] = useState<{
+    from?: Date;
+    to?: Date;
+  }>({});
 
   const API_BASE = import.meta.env.VITE_API_BASE;
+
+  const userRole = useContext(UserContext);
+  const [parentRange, setPaymentRange] = useState<number[]>([0, 100000000]);
 
   function toggleSelect(id: number) {
     setSelectedKeys((selectedIds) =>
       selectedIds.includes(id)
         ? selectedIds.filter((filteredId) => filteredId != id)
-        : [...selectedIds, id]
+        : [...selectedIds, id],
     );
+  }
+
+  function findMin(arr: number[]) {
+    if (arr.length === 0) return 0;
+
+    return Math.min(...arr);
+  }
+
+  function findMax(arr: number[]) {
+    if (arr.length === 0) return 0;
+
+    return Math.max(...arr);
   }
 
   const fetchPayments = () => {
@@ -34,17 +56,20 @@ export function PaymentsPage() {
     if (selectedKeys.length === 0) return;
 
     let userResponse = confirm(
-      "Are you sure you want to delete? \nEither OK or Cancel."
+      "Are you sure you want to delete? \nEither OK or Cancel.",
     );
 
     if (!userResponse) {
       return;
     }
 
+    const token = localStorage.getItem("token");
+
     await fetch(`${API_BASE}/payments`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         ids: selectedKeys,
@@ -56,14 +81,46 @@ export function PaymentsPage() {
 
   useEffect(fetchPayments, []);
 
-  const filteredPayments = payments.filter((payment) =>
-    payment.student?.includes(searchName)
-  );
+  const filteredPayments = payments.filter((payment) => {
+    const studentName = payment.student?.includes(searchName);
+    const studentPaymentStatus = payment.status.includes(paymentStatus);
+    const paymentRange =
+      Number(payment.amount) >= parentRange[0] &&
+      Number(payment.amount) <= parentRange[1];
+
+    let matchesDate = true;
+
+    if (calendarRange.from && calendarRange.to) {
+      const periodParts = payment.paid_for_period.split(/-(?=\d{4})/);
+      if (periodParts.length === 2) {
+        const [payStart, payEnd] = periodParts;
+
+        const calendarStart = calendarRange.from.toISOString().split("T")[0];
+        const calendarEnd = calendarRange.to.toISOString().split("T")[0];
+
+        matchesDate = payStart <= calendarStart && payEnd >= calendarEnd;
+      }
+    }
+
+    return studentName && studentPaymentStatus && paymentRange && matchesDate;
+  });
+
+  const paymentAmounts = payments.map((p) => Number(p.amount));
 
   return (
     <div className="flex flex-col">
       <div className="flex p-5">
         <SearchBar searchName={searchName} searchingChange={setSearch} />
+        <PaymentFilter
+          key={`${findMin(paymentAmounts)}-${findMax(paymentAmounts)}`}
+          paymentStatus={paymentStatus}
+          setPaymentStatus={setPaymentStatus}
+          minimumPayment={findMin(paymentAmounts)}
+          maximumPayment={findMax(paymentAmounts)}
+          setParentRange={setPaymentRange}
+          calendarRange={calendarRange}
+          setCalendarRange={setCalendarRange}
+        />
         <div className="flex"></div>
         <div className="flex flex-1"></div>
         <div className="flex flex-row gap-3">
@@ -71,14 +128,16 @@ export function PaymentsPage() {
             onClick={() => setPaymentOpen(!open)}
             message="Add Payment"
           />
-          <DeleteButton
-            onClick={() => {
-              deletePayments();
-              setDelete(!isDelete);
-              setSelectedKeys([]);
-            }}
-            isOn={isDelete}
-          />
+          {userRole?.role === "admin" && (
+            <DeleteButton
+              onClick={() => {
+                deletePayments();
+                setDelete(!isDelete);
+                setSelectedKeys([]);
+              }}
+              isOn={isDelete}
+            />
+          )}
         </div>
       </div>
       {open && (
