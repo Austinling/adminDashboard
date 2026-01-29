@@ -1,30 +1,37 @@
-import { SignJWT,jwtVerify} from "jose";
+import { SignJWT, jwtVerify } from "jose";
 
 type Env = {
   DB: D1Database; // Cloudflare D1 binding
   ADMIN_SECRET: string;
   JWT_SECRET: string;
-}
+};
 
 type UserBody = {
   email: string;
   password: string;
-}
+};
 
 type LoginBody = {
   email: string;
   password: string;
-}
+};
 
 type StudentBody = {
   name: string;
   phoneNumber: string;
   grade: string;
-}
+};
+
+type UpdateBody = {
+  student_id: number;
+  name: string;
+  phoneNumber: string;
+  grade: string;
+};
 
 type Ids = {
-  ids: number[]
-}
+  ids: number[];
+};
 
 type PaymentBody = {
   student_id: number;
@@ -33,283 +40,345 @@ type PaymentBody = {
   status: string;
   payment_date: string;
   student?: string;
-}
+};
 
 export default {
-  async fetch(request:Request, env:Env):Promise<Response> {
-
+  async fetch(request: Request, env: Env): Promise<Response> {
     const corsHeaders = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "*"
+      "Access-Control-Allow-Headers": "*",
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
     }
 
-    if (request.method === "OPTIONS"){
-      return new Response(null,{headers:corsHeaders});
-    }
-
-
-    try{
+    try {
       const url = new URL(request.url);
 
       console.log(`Method: ${request.method} | Path: ${url.pathname}`);
 
-      async function hashPassword(password:string):Promise<string>{
+      async function hashPassword(password: string): Promise<string> {
         const textEncoder = new TextEncoder();
         const data = textEncoder.encode(password);
 
-        const hashCode = await crypto.subtle.digest("SHA-256",data);
-        return Array.from(new Uint8Array(hashCode)).map((b) => b.toString(16).padStart(2,"0")).join("");
+        const hashCode = await crypto.subtle.digest("SHA-256", data);
+        return Array.from(new Uint8Array(hashCode))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
       }
 
-      async function verifyToken(req:Request,env: Env){
+      async function verifyToken(req: Request, env: Env) {
         const authHeader = req.headers.get("Authorization");
 
-        if (!authHeader || !authHeader.startsWith("Bearer ")){
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
           throw new Error("Missing or invalid Authorization header");
         }
 
         const token = authHeader.split(" ")[1];
         const encodedSecret = new TextEncoder().encode(env.JWT_SECRET);
 
-        const payload = (await jwtVerify(token,encodedSecret)).payload;
+        const payload = (await jwtVerify(token, encodedSecret)).payload;
 
         return payload as { username: string; role: string };
-        
       }
 
+      async function createJWTToken(
+        username: string,
+        role: string,
+        env: Env,
+      ): Promise<string> {
+        const encodedToken = new TextEncoder().encode(env.JWT_SECRET);
 
-	  async function createJWTToken(username: string, role: string, env: Env):Promise<string>{ 
-		const encodedToken = new TextEncoder().encode(env.JWT_SECRET); 
-		
-		return await new SignJWT({username,role}) 
-		.setProtectedHeader({alg: "HS256"}) 
-		.setExpirationTime("2h") 
-		.sign(encodedToken); }
+        return await new SignJWT({ username, role })
+          .setProtectedHeader({ alg: "HS256" })
+          .setExpirationTime("2h")
+          .sign(encodedToken);
+      }
 
-        //POST for Creating accounts
+      //POST for Creating accounts
 
-        if (url.pathname == "/admin/create_user" && request.method === "POST"){
-
-          if (request.headers.get("Authorization") != `Bearer ${env.ADMIN_SECRET}`){
-            return new Response("Unauthorized", {status:401});
-          }
-
-          const body:UserBody = await request.json();
-          const {email,password} = body;
-
-          if (!email || !password) {
-            return new Response("Missing fields", { status: 400 });
-          }
-
-          const password_hash = await hashPassword(password);
-  
-          await env.DB
-          .prepare(`INSERT INTO users (email, password_hash)
-              VALUES (?,?)`)
-          .bind(email,password_hash)
-          .run()
-  
-          return new Response(JSON.stringify({
-            success: true,
-            headers:corsHeaders
-          }));
+      if (url.pathname == "/admin/create_user" && request.method === "POST") {
+        if (
+          request.headers.get("Authorization") != `Bearer ${env.ADMIN_SECRET}`
+        ) {
+          return new Response("Unauthorized", { status: 401 });
         }
+
+        const body: UserBody = await request.json();
+        const { email, password } = body;
+
+        if (!email || !password) {
+          return new Response("Missing fields", { status: 400 });
+        }
+
+        const password_hash = await hashPassword(password);
+
+        await env.DB.prepare(
+          `INSERT INTO users (email, password_hash)
+              VALUES (?,?)`,
+        )
+          .bind(email, password_hash)
+          .run();
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            headers: corsHeaders,
+          }),
+        );
+      }
 
       //POST for Login
 
-      if (url.pathname == "/login" && request.method === "POST"){
+      if (url.pathname == "/login" && request.method === "POST") {
+        const body: LoginBody = await request.json();
+        const { email, password } = body;
 
-        const body:LoginBody = await request.json();
-        const {email,password} = body;
+        const password_hash = await hashPassword(password);
 
-        const password_hash = await hashPassword(password)
+        const loginResult = await env.DB.prepare(
+          `SELECT * FROM users WHERE email = ? AND password_hash = ?`,
+        )
+          .bind(email, password_hash)
+          .all();
 
-        const loginResult= await env.DB
+        const token = await createJWTToken(
+          email,
+          loginResult.results[0].role as string,
+          env,
+        );
 
-        .prepare(`SELECT * FROM users WHERE email = ? AND password_hash = ?`)
-        .bind(email,password_hash)
-        .all();
-
-		const token = await createJWTToken(email,loginResult.results[0].role as string,env)
-
-        if (loginResult.results.length === 0){
-          return new Response(JSON.stringify({
-            success: false,
-            message: "Login Unsuccesful"
-          }),{headers:corsHeaders});
+        if (loginResult.results.length === 0) {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: "Login Unsuccesful",
+            }),
+            { headers: corsHeaders },
+          );
         }
 
-		return new Response(JSON.stringify({
-			token: token,
+        return new Response(
+          JSON.stringify({
+            token: token,
             success: true,
             message: "Login Succesful",
             role: loginResult.results[0].role,
-          }),{headers:corsHeaders});
-
-
+          }),
+          { headers: corsHeaders },
+        );
       }
-
 
       //GET FOR STUDENTS
 
-      if (url.pathname == "/students" && request.method === "GET"){
-        const result = await env.DB
-        .prepare("SELECT * FROM students")
-        .all();
+      if (url.pathname == "/students" && request.method === "GET") {
+        const result = await env.DB.prepare("SELECT * FROM students").all();
 
         return new Response(JSON.stringify(result.results), {
-          headers: corsHeaders
+          headers: corsHeaders,
         });
       }
-        
+
       //POST for STUDENTS
 
-      if (url.pathname == "/students" && request.method === "POST"){
-        const body:StudentBody = await request.json();
-        const {name,phoneNumber,grade} = body;
+      if (url.pathname == "/students" && request.method === "POST") {
+        const body: StudentBody = await request.json();
+        const { name, phoneNumber, grade } = body;
 
-        const postResult= await env.DB
+        const postResult = await env.DB.prepare(
+          `INSERT INTO students (name,phoneNumber,grade)
+        VALUES (?,?,?)`,
+        )
+          .bind(name, phoneNumber, grade)
+          .run();
 
-        .prepare(`INSERT INTO students (name,phoneNumber,grade)
-        VALUES (?,?,?)`)
-        .bind(name,phoneNumber,grade)
-        .run()
-
-        return new Response(JSON.stringify({
-          success: true,
-          student_id: postResult.meta.last_row_id}),
-          {headers: corsHeaders}
+        return new Response(
+          JSON.stringify({
+            success: true,
+            student_id: postResult.meta.last_row_id,
+          }),
+          { headers: corsHeaders },
         );
       }
 
-	  //DELETE FOR STUDENTS
+      //DELETE FOR STUDENTS
 
-	if (url.pathname == "/students" && request.method === "DELETE"){
+      if (url.pathname == "/students" && request.method === "DELETE") {
+        const payload = await verifyToken(request, env);
 
-    const payload = await verifyToken(request,env);
+        console.log("Current User Payload:", payload);
 
-    console.log("Current User Payload:", payload);
+        if (payload.role !== "admin") {
+          throw new Error("Forbidden: You aren't an admin");
+        }
 
-    if (payload.role !== "admin") {
-      throw new Error("Forbidden: You aren't an admin");
-    }
+        const body: Ids = await request.json();
+        const ids = body.ids;
 
-    const body:Ids = await request.json();
-    const ids = body.ids; 
+        if (!Array.isArray(ids) || ids.length === 0) {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: "No IDs given",
+            }),
+            { headers: corsHeaders },
+          );
+        }
 
-    if (!Array.isArray(ids) || ids.length ===0){
-      return new Response(JSON.stringify({
-        success:false,
-        message: "No IDs given",
-      }),{headers:corsHeaders})
-    }
+        const deleteRequest = ids.map(() => "?").join(",");
 
-    const deleteRequest = ids.map(()=> "?").join(",")
+        const deleteResult = await env.DB.prepare(
+          `DELETE FROM students WHERE student_id in (${deleteRequest})`,
+        )
+          .bind(...ids)
+          .run();
 
-
-        const deleteResult= await env.DB
-
-        .prepare(`DELETE FROM students WHERE student_id in (${deleteRequest})`)
-        .bind(...ids)
-        .run()
-
-        return new Response(JSON.stringify({
-          success: true,
-          student_id: deleteResult.meta.changes}),
-          {headers: corsHeaders}
+        return new Response(
+          JSON.stringify({
+            success: true,
+            student_id: deleteResult.meta.changes,
+          }),
+          { headers: corsHeaders },
         );
+      }
+
+      //UPDATE FOR STUDENTS
+
+      if (url.pathname == "/students" && request.method === "PUT") {
+        const payload = await verifyToken(request, env);
+
+        if (payload.role !== "admin") {
+          throw new Error("Forbidden: You aren't an admin");
+        }
+        const body: UpdateBody = await request.json();
+
+        const { student_id, name, phoneNumber, grade } = body;
+
+        try {
+          const updateResult = await env.DB.prepare(
+            `UPDATE students SET name = ?, phoneNumber = ?, grade = ? WHERE student_id = ?`,
+          )
+            .bind(name, phoneNumber, grade, student_id)
+            .run();
+
+          return new Response(
+            JSON.stringify({
+              success: true,
+              student_id: updateResult.meta.changes,
+            }),
+            { headers: corsHeaders },
+          );
+        } catch (e: any) {
+          return new Response(JSON.stringify({ error: e.message }), {
+            status: 500,
+          });
+        }
       }
 
       //GET FOR ATTENDANCE
 
-      if (url.pathname == "/attendance" && request.method === "GET"){
-        const result = await env.DB
-        .prepare("SELECT * FROM attendance")
-        .all();
+      if (url.pathname == "/attendance" && request.method === "GET") {
+        const result = await env.DB.prepare("SELECT * FROM attendance").all();
 
         return new Response(JSON.stringify(result.results), {
-          headers: corsHeaders
+          headers: corsHeaders,
         });
       }
 
       //GET FOR PAYMENTS
 
-      if (url.pathname == "/payments" && request.method === "GET"){
-        const result = await env.DB
-        .prepare("SELECT * FROM payments")
-        .all();
+      if (url.pathname == "/payments" && request.method === "GET") {
+        const result = await env.DB.prepare("SELECT * FROM payments").all();
 
         return new Response(JSON.stringify(result.results), {
-          headers: corsHeaders
+          headers: corsHeaders,
         });
       }
 
-              
       //POST for PAYMENTS
 
-      if (url.pathname == "/payments" && request.method === "POST"){
-        const body:PaymentBody = await request.json();
-        const {student_id,paid_for_period,amount,status,payment_date,student} = body;
+      if (url.pathname == "/payments" && request.method === "POST") {
+        const body: PaymentBody = await request.json();
+        const {
+          student_id,
+          paid_for_period,
+          amount,
+          status,
+          payment_date,
+          student,
+        } = body;
 
-        const postResult= await env.DB
+        const postResult = await env.DB.prepare(
+          `INSERT INTO payments (student_id,paid_for_period,amount,status,payment_date,student)
+        VALUES (?,?,?,?,?,?)`,
+        )
+          .bind(
+            student_id,
+            paid_for_period,
+            amount,
+            status,
+            payment_date,
+            student,
+          )
+          .run();
 
-        .prepare(`INSERT INTO payments (student_id,paid_for_period,amount,status,payment_date,student)
-        VALUES (?,?,?,?,?,?)`)
-        .bind(student_id,paid_for_period,amount,status,payment_date,student)
-        .run()
-
-        return new Response(JSON.stringify({
-          success: true,
-          payment_id: postResult.meta.last_row_id}),
-          {headers: corsHeaders}
+        return new Response(
+          JSON.stringify({
+            success: true,
+            payment_id: postResult.meta.last_row_id,
+          }),
+          { headers: corsHeaders },
         );
       }
 
-  //DELETE FOR Payments
+      //DELETE FOR Payments
 
-	if (url.pathname == "/payments" && request.method === "DELETE"){
+      if (url.pathname == "/payments" && request.method === "DELETE") {
+        const payload = await verifyToken(request, env);
 
-    const payload = await verifyToken(request,env);
+        if (payload.role !== "admin") {
+          throw new Error("Forbidden: You aren't an admin");
+        }
 
-    if (payload.role !== "admin") {
-      throw new Error("Forbidden: You aren't an admin");
-    }
+        const body: Ids = await request.json();
+        const ids = body.ids;
 
-    const body:Ids = await request.json();
-    const ids = body.ids; 
+        if (!Array.isArray(ids) || ids.length === 0) {
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: "No IDs given",
+            }),
+            { headers: corsHeaders },
+          );
+        }
 
-    if (!Array.isArray(ids) || ids.length ===0){
-      return new Response(JSON.stringify({
-        success:false,
-        message: "No IDs given",
-      }),{headers:corsHeaders})
-    }
+        const deleteRequest = ids.map(() => "?").join(",");
 
-    const deleteRequest = ids.map(()=> "?").join(",")
+        const deleteResult = await env.DB.prepare(
+          `DELETE FROM payments WHERE payment_id in (${deleteRequest})`,
+        )
+          .bind(...ids)
+          .run();
 
-
-        const deleteResult= await env.DB
-
-        .prepare(`DELETE FROM payments WHERE payment_id in (${deleteRequest})`)
-        .bind(...ids)
-        .run()
-
-        return new Response(JSON.stringify({
-          success: true,
-          student_id: deleteResult.meta.changes}),
-          {headers: corsHeaders}
+        return new Response(
+          JSON.stringify({
+            success: true,
+            student_id: deleteResult.meta.changes,
+          }),
+          { headers: corsHeaders },
         );
       }
 
-      return new Response("Not Found", { status: 404, headers: corsHeaders});
-
-    }catch (error: any){
-      return new Response(
-        JSON.stringify({ error: error.message}),
-        { status: 500, headers:corsHeaders}
-      );
+      return new Response("Not Found", { status: 404, headers: corsHeaders });
+    } catch (error: any) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: corsHeaders,
+      });
     }
-  }
-}
+  },
+};
