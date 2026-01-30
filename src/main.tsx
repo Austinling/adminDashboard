@@ -11,6 +11,7 @@ import "./index.css";
 import { Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute.tsx";
 import { ContainerContext } from "./Authorization.tsx";
+import { Dashboard } from "./Dashboard.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -27,6 +28,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/students" element={<StudentsPage />}></Route>
               <Route path="/teachers" element={<TeachersPage />}></Route>
               <Route path="/payments" element={<PaymentsPage />}></Route>
+              <Route path="/dashboard" element={<Dashboard />}></Route>
             </Route>
           </Route>
         </Routes>

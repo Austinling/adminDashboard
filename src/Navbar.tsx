@@ -15,6 +15,17 @@ export function Navbar({ onClick, navBarShow }: Navbar) {
     <div className="bg-red-300 w-50 flex shadow-lg flex-col gap-6 mr-10">
       <div className="flex flex-1 flex-col w-50 justify-center gap-5">
         <Link
+          to="/dashboard"
+          className=" h-10 items-center group hover:bg-white justify-center flex"
+        >
+          <div className="w-12 flex justify-center">
+            <GraduationCap className="w-8 h-8 text-white group-hover:text-red-300" />
+          </div>
+          <div className="text-white diphylleia-regular text-1xl group-hover:text-red-300">
+            Dashboard
+          </div>
+        </Link>
+        <Link
           to="/students"
           className=" flex h-10 items-center group hover:bg-white justify-center"
         >
