@@ -36,8 +36,11 @@ export function Dashboard() {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 h-screen gap-4 p-4">
-      <div className="bg-white border-2 rounded-4xl flex items-center justify-center">
+    <div className="grid grid-cols-3 h-screen gap-4 p-4">
+      <div className="bg-white border-2 rounded-4xl flex flex-col items-center justify-center col-span-2">
+        <div className="text-xl font-bold text-gray-800 mb-4">
+          Student Grades
+        </div>
         <StudentGradePieChart students={students} />
       </div>
       <div className="bg-white border-2 rounded-4xl"></div>
