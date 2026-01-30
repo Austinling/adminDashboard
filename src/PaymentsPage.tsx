@@ -1,17 +1,22 @@
 import { Table } from "./Table.tsx";
 import type { Payment } from "./PaymentType.ts";
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "./Authorization.tsx";
 import { SearchBar } from "./SearchBar.tsx";
 import { AddStudentButton } from "./AddStudentButton.tsx";
 import { AddPayment } from "./AddPayment.tsx";
 import { DeleteButton } from "./DeleteButton.tsx";
 import { PaymentFilter } from "./PaymentFilter.tsx";
+import { PaymentFilterButton } from "./PaymentFilterButton.tsx";
+import { EditPaymentForm } from "./EditPaymentForm.tsx";
+import { EditButton } from "./EditButton.tsx";
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [searchName, setSearch] = useState("");
   const [open, setPaymentOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [isDelete, setDelete] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
   const [paymentStatus, setPaymentStatus] = useState<string>("");
@@ -20,9 +25,18 @@ export function PaymentsPage() {
     to?: Date;
   }>({});
 
+  const [paymentDateRange, setPaymentDateRange] = useState<{
+    from?: Date;
+    to?: Date;
+  }>({});
+
+  const [showEdit, setShowEdit] = useState<boolean>(false);
+  const [editedPayment, setEditedPayment] = useState<Payment>();
+
   const API_BASE = import.meta.env.VITE_API_BASE;
 
   const userRole = useContext(UserContext);
+  const navigate = useNavigate();
   const [parentRange, setPaymentRange] = useState<number[]>([0, 100000000]);
 
   function toggleSelect(id: number) {
@@ -45,11 +59,27 @@ export function PaymentsPage() {
     return Math.max(...arr);
   }
 
-  const fetchPayments = () => {
-    fetch(`${API_BASE}/payments`)
-      .then((res) => res.json())
-      .then((data: Payment[]) => setPayments(data))
-      .catch((err) => console.log(err));
+  const fetchPayments = async () => {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE}/payments`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.status === 401) {
+      alert("Session expired! Please login again.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      navigate("/login");
+      return;
+    }
+
+    if (res.ok) {
+      const data: Payment[] = await res.json();
+      setPayments(data);
+    }
   };
 
   const deletePayments = async () => {
@@ -65,7 +95,7 @@ export function PaymentsPage() {
 
     const token = localStorage.getItem("token");
 
-    await fetch(`${API_BASE}/payments`, {
+    const res = await fetch(`${API_BASE}/payments`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -76,10 +106,23 @@ export function PaymentsPage() {
       }),
     });
 
-    fetchPayments();
+    if (res.status === 401) {
+      alert("Session expired! Please login again.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      navigate("/login");
+      return;
+    }
+
+    if (res.ok) {
+      fetchPayments();
+      setSelectedKeys([]);
+    }
   };
 
-  useEffect(fetchPayments, []);
+  useEffect(() => {
+    fetchPayments();
+  }, []);
 
   const filteredPayments = payments.filter((payment) => {
     const studentName = payment.student?.includes(searchName);
@@ -89,6 +132,7 @@ export function PaymentsPage() {
       Number(payment.amount) <= parentRange[1];
 
     let matchesDate = true;
+    let paymentDate = true;
 
     if (calendarRange.from && calendarRange.to) {
       const periodParts = payment.paid_for_period.split(/-(?=\d{4})/);
@@ -98,11 +142,28 @@ export function PaymentsPage() {
         const calendarStart = calendarRange.from.toISOString().split("T")[0];
         const calendarEnd = calendarRange.to.toISOString().split("T")[0];
 
-        matchesDate = payStart <= calendarStart && payEnd >= calendarEnd;
+        matchesDate = payStart >= calendarStart && payEnd <= calendarEnd;
       }
     }
 
-    return studentName && studentPaymentStatus && paymentRange && matchesDate;
+    if (paymentDateRange.from && paymentDateRange.to) {
+      const periodParts = payment.payment_date;
+      if (periodParts) {
+        const calendarStart = paymentDateRange.from.toISOString().split("T")[0];
+        const calendarEnd = paymentDateRange.to.toISOString().split("T")[0];
+
+        paymentDate =
+          periodParts >= calendarStart && periodParts <= calendarEnd;
+      }
+    }
+
+    return (
+      studentName &&
+      studentPaymentStatus &&
+      paymentRange &&
+      matchesDate &&
+      paymentDate
+    );
   });
 
   const paymentAmounts = payments.map((p) => Number(p.amount));
@@ -111,16 +172,22 @@ export function PaymentsPage() {
     <div className="flex flex-col">
       <div className="flex p-5">
         <SearchBar searchName={searchName} searchingChange={setSearch} />
-        <PaymentFilter
-          key={`${findMin(paymentAmounts)}-${findMax(paymentAmounts)}`}
-          paymentStatus={paymentStatus}
-          setPaymentStatus={setPaymentStatus}
-          minimumPayment={findMin(paymentAmounts)}
-          maximumPayment={findMax(paymentAmounts)}
-          setParentRange={setPaymentRange}
-          calendarRange={calendarRange}
-          setCalendarRange={setCalendarRange}
-        />
+        <PaymentFilterButton open={filterOpen} setOpen={setFilterOpen} />
+        {filterOpen && (
+          <PaymentFilter
+            key={`${findMin(paymentAmounts)}-${findMax(paymentAmounts)}`}
+            paymentStatus={paymentStatus}
+            setPaymentStatus={setPaymentStatus}
+            minimumPayment={findMin(paymentAmounts)}
+            maximumPayment={findMax(paymentAmounts)}
+            setParentRange={setPaymentRange}
+            calendarRange={calendarRange}
+            setCalendarRange={setCalendarRange}
+            paymentDateRange={paymentDateRange}
+            setPaymentDateRange={setPaymentDateRange}
+            onClose={() => setFilterOpen(false)}
+          />
+        )}
         <div className="flex"></div>
         <div className="flex flex-1"></div>
         <div className="flex flex-row gap-3">
@@ -144,6 +211,13 @@ export function PaymentsPage() {
         <AddPayment
           onSubmit={fetchPayments}
           onClick={() => setPaymentOpen(false)}
+        />
+      )}
+      {showEdit && editedPayment && (
+        <EditPaymentForm
+          payment={editedPayment}
+          onSubmit={fetchPayments}
+          onClick={() => setShowEdit(!showEdit)}
         />
       )}
       <Table
@@ -173,6 +247,17 @@ export function PaymentsPage() {
           { header: "Amount (MMK)", render: (p) => p.amount },
           { header: "Status", render: (p) => p.status },
           { header: "Payment Date", render: (p) => p.payment_date },
+          {
+            header: "",
+            render: (p) => (
+              <EditButton
+                onClick={() => {
+                  setEditedPayment(p);
+                  setShowEdit(!showEdit);
+                }}
+              />
+            ),
+          },
         ]}
         selectedKeys={selectedKeys}
         toggleSelect={toggleSelect}
