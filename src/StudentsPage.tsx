@@ -176,17 +176,21 @@ export function StudentsPage() {
           { header: "Name", render: (s) => s.name },
           { header: "Phone Number", render: (s) => s.phoneNumber },
           { header: "Grade", render: (s) => s.grade },
-          {
-            header: "",
-            render: (s) => (
-              <EditButton
-                onClick={() => {
-                  setEditedStudent(s);
-                  setShowEdit(!showEdit);
-                }}
-              />
-            ),
-          },
+          ...(userRole?.role === "admin"
+            ? [
+                {
+                  header: "",
+                  render: (s: Student) => (
+                    <EditButton
+                      onClick={() => {
+                        setEditedStudent(s);
+                        setShowEdit(!showEdit);
+                      }}
+                    />
+                  ),
+                },
+              ]
+            : []),
         ]}
         selectedKeys={selectedKeys}
         toggleSelect={toggleSelect}

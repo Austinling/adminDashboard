@@ -247,17 +247,21 @@ export function PaymentsPage() {
           { header: "Amount (MMK)", render: (p) => p.amount },
           { header: "Status", render: (p) => p.status },
           { header: "Payment Date", render: (p) => p.payment_date },
-          {
-            header: "",
-            render: (p) => (
-              <EditButton
-                onClick={() => {
-                  setEditedPayment(p);
-                  setShowEdit(!showEdit);
-                }}
-              />
-            ),
-          },
+          ...(userRole?.role === "admin"
+            ? [
+                {
+                  header: "",
+                  render: (p: Payment) => (
+                    <EditButton
+                      onClick={() => {
+                        setEditedPayment(p);
+                        setShowEdit(!showEdit);
+                      }}
+                    />
+                  ),
+                },
+              ]
+            : []),
         ]}
         selectedKeys={selectedKeys}
         toggleSelect={toggleSelect}
