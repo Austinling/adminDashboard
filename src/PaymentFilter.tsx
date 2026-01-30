@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "rc-slider/assets/index.css";
 import { CalendarButton } from "./CalendarButton";
 import { Calendar } from "./Calendar";
+import { X } from "lucide-react";
 
 type PaymentFilterProp = {
   paymentStatus: string;
@@ -12,6 +13,9 @@ type PaymentFilterProp = {
   setParentRange: (range: number[]) => void;
   calendarRange: CalendarRange;
   setCalendarRange: (date: CalendarRange) => void;
+  paymentDateRange: CalendarRange;
+  setPaymentDateRange: (date: CalendarRange) => void;
+  onClose: () => void;
 };
 
 type CalendarRange = {
@@ -27,6 +31,9 @@ export function PaymentFilter({
   setParentRange,
   calendarRange,
   setCalendarRange,
+  paymentDateRange,
+  setPaymentDateRange,
+  onClose,
 }: PaymentFilterProp) {
   const [paymentRange, setPaymentRange] = useState<number[]>([
     minimumPayment,
@@ -46,8 +53,9 @@ export function PaymentFilter({
   };
 
   const [paid_for_period, setPeriod] = useState("");
-  const [calendarOpen, setCalendarOpen] = useState(false);
-  const [calendarMode, setCalendarMode] = useState<"single" | "range">("range");
+  const [periodCalendarOpen, setPeriodCalendarOpen] = useState(false);
+  const [dateCalendarOpen, setDateCalendarOpen] = useState(false);
+  const [paymentDate, setPaymentDate] = useState("");
 
   useEffect(() => {
     setPaymentRange([minimumPayment, maximumPayment]);
@@ -58,15 +66,31 @@ export function PaymentFilter({
       return;
     }
 
-    if (calendarMode === "range" && calendarRange.to) {
+    if (calendarRange.to) {
       setPeriod(
         `${formatToISO(calendarRange.from)}-${formatToISO(calendarRange.to)}`,
       );
     }
-  }, [calendarRange, calendarMode]);
+  }, [calendarRange]);
+
+  useEffect(() => {
+    if (!paymentDateRange.from) {
+      return;
+    }
+
+    if (paymentDateRange.to) {
+      setPaymentDate(
+        `${formatToISO(paymentDateRange.from)}-${formatToISO(paymentDateRange.to)}`,
+      );
+    }
+  }, [paymentDateRange]);
 
   return (
-    <div className="absolute w-100 h-100 flex items-center justify-items-start border-2 bg-white border-gray-400 rounded-4xl z-100">
+    <div className="absolute w-70 h-150 flex items-center justify-items-start border-2 bg-white border-gray-400 rounded-4xl z-100 top-10">
+      <X
+        className="absolute right-0 top-0 mr-3 mt-3 cursor-pointer hover:scale-110"
+        onClick={onClose}
+      />
       <div>
         <div className="p-3">
           <h3 className="border-b-2 mb-5">Payment Period</h3>
@@ -77,20 +101,46 @@ export function PaymentFilter({
               readOnly
               className="bg-gray-300 p-3"
             ></input>
-            {calendarOpen && (
+            {periodCalendarOpen && (
               <Calendar
-                open={calendarOpen}
+                open={periodCalendarOpen}
                 range={calendarRange}
                 setRange={(calendarRange) => setCalendarRange(calendarRange)}
-                onClose={() => setCalendarOpen(!calendarOpen)}
-                mode={calendarMode}
+                onClose={() => setPeriodCalendarOpen(false)}
+                mode="range"
               />
             )}
             <CalendarButton
               onClick={() => {
-                setCalendarOpen(!calendarOpen);
-                setCalendarMode("range");
+                setPeriodCalendarOpen(!periodCalendarOpen);
                 setCalendarRange({});
+              }}
+            />
+          </div>
+
+          <h3 className="border-b-2 mb-5">Payment Date</h3>
+          <div className="flex flex-col gap-5">
+            <input
+              required
+              value={paymentDate}
+              readOnly
+              className="bg-gray-300 p-3"
+            ></input>
+            {dateCalendarOpen && (
+              <Calendar
+                open={dateCalendarOpen}
+                range={paymentDateRange}
+                setRange={(paymentDateRange) =>
+                  setPaymentDateRange(paymentDateRange)
+                }
+                onClose={() => setDateCalendarOpen(false)}
+                mode="range"
+              />
+            )}
+            <CalendarButton
+              onClick={() => {
+                setDateCalendarOpen(!dateCalendarOpen);
+                setPaymentDateRange({});
               }}
             />
           </div>

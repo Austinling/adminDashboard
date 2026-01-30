@@ -28,7 +28,7 @@ export function Navbar({ onClick, navBarShow }: Navbar) {
 
         <Link
           to="/teachers"
-          className=" flex h-10 items-center group hover:bg-white justify-center"
+          className=" h-10 items-center group hover:bg-white justify-center hidden"
         >
           <div className="w-12 flex justify-center">
             <GraduationCap className="w-8 h-8 text-white group-hover:text-red-300" />
