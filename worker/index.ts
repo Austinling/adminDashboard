@@ -29,6 +29,16 @@ type UpdateBody = {
   grade: string;
 };
 
+type PaymentUpdateBody = {
+  payment_id: number;
+  student_id: number;
+  paid_for_period: string;
+  amount: string;
+  status: string;
+  payment_date: string;
+  student?: string;
+};
+
 type Ids = {
   ids: number[];
 };
@@ -47,7 +57,7 @@ export default {
     const corsHeaders = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "*",
     };
 
@@ -332,6 +342,60 @@ export default {
           }),
           { headers: corsHeaders },
         );
+      }
+
+      //UPDATE FOR PAYMENTS
+
+      if (url.pathname == "/payments" && request.method === "PUT") {
+        try {
+          const payload = await verifyToken(request, env);
+
+          if (payload.role !== "admin") {
+            return new Response(
+              JSON.stringify({ error: "Forbidden: You aren't an admin" }),
+              { status: 403, headers: corsHeaders },
+            );
+          }
+
+          const body: PaymentUpdateBody = await request.json();
+
+          const {
+            payment_id,
+            student_id,
+            paid_for_period,
+            amount,
+            status,
+            payment_date,
+            student,
+          } = body;
+
+          const updateResult = await env.DB.prepare(
+            `UPDATE payments SET student_id = ?, paid_for_period = ?, amount = ?, status = ?, payment_date = ?, student = ? WHERE payment_id = ?`,
+          )
+            .bind(
+              student_id,
+              paid_for_period,
+              amount,
+              status,
+              payment_date,
+              student,
+              payment_id,
+            )
+            .run();
+
+          return new Response(
+            JSON.stringify({
+              success: true,
+              payment_id: updateResult.meta.changes,
+            }),
+            { headers: corsHeaders },
+          );
+        } catch (e: any) {
+          return new Response(JSON.stringify({ error: e.message }), {
+            status: 500,
+            headers: corsHeaders,
+          });
+        }
       }
 
       //DELETE FOR Payments
