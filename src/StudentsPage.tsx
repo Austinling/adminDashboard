@@ -8,14 +8,18 @@ import { Filter } from "./Filter.tsx";
 import { AddStudentButton } from "./AddStudentButton.tsx";
 import { AddStudentForm } from "./AddStudentForm.tsx";
 import { DeleteButton } from "./DeleteButton.tsx";
+import { EditButton } from "./EditButton.tsx";
+import { EditButtonForm } from "./EditButtonForm.tsx";
 
 export function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
-  const [searchName, setSearch] = useState("");
+  const [searchName, setSearch] = useState<string>("");
   const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
-  const [addOpen, setAddOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState<boolean>(false);
   const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
-  const [isDelete, setDelete] = useState(false);
+  const [isDelete, setDelete] = useState<boolean>(false);
+  const [editedStudent, setEditedStudent] = useState<Student>();
+  const [showEdit, setShowEdit] = useState<boolean>(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
@@ -140,6 +144,14 @@ export function StudentsPage() {
         />
       )}
 
+      {showEdit && editedStudent && (
+        <EditButtonForm
+          onSubmit={fetchStudents}
+          onClick={() => setShowEdit(false)}
+          student={editedStudent}
+        />
+      )}
+
       <Table
         data={filteredStudents}
         getKey={(s) => s.student_id}
@@ -164,6 +176,17 @@ export function StudentsPage() {
           { header: "Name", render: (s) => s.name },
           { header: "Phone Number", render: (s) => s.phoneNumber },
           { header: "Grade", render: (s) => s.grade },
+          {
+            header: "",
+            render: (s) => (
+              <EditButton
+                onClick={() => {
+                  setEditedStudent(s);
+                  setShowEdit(!showEdit);
+                }}
+              />
+            ),
+          },
         ]}
         selectedKeys={selectedKeys}
         toggleSelect={toggleSelect}
