@@ -1,12 +1,12 @@
 export function Dashboard() {
   return (
-    <div>
-      <div className="w-[25%] h-[25%] bg-white border-2"></div>
-      <div className="w-[25%] h-[25%] bg-white border-2"></div>
+    <div className="grid grid-cols-2 h-screen gap-4 p-4">
+      <div className="bg-white border-2 rounded-4xl">testing</div>
+      <div className="bg-white border-2 rounded-4xl"></div>
 
-      <div className="w-[25%] h-[25%] bg-white border-2"></div>
+      <div className="bg-white border-2 rounded-4xl"></div>
 
-      <div className="w-[25% h-[25%]] bg-white border-2"></div>
+      <div className="bg-white border-2 rounded-4xl"></div>
     </div>
   );
 }
