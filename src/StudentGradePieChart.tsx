@@ -64,8 +64,18 @@ type StudentGrades = {
   students: Student[];
 };
 
+const renderColorfulLegendText = (value: string, entry: any) => {
+  const { color } = entry;
+
+  return (
+    <span style={{ color }}>
+      {value} {entry.payload.value}
+    </span>
+  );
+};
+
 export function StudentGradePieChart({
-  isAnimationActive = false,
+  isAnimationActive = true,
   students,
 }: StudentGrades) {
   const data = students.reduce(
@@ -89,6 +99,12 @@ export function StudentGradePieChart({
     [] as { name: string; value: number; fill: string }[],
   );
 
+  const correctOrder = Object.keys(GRADE_COLORS);
+
+  const sortedData = [...data].sort((a, b) => {
+    return correctOrder.indexOf(a.name) - correctOrder.indexOf(b.name);
+  });
+
   return (
     <PieChart
       style={{
@@ -100,7 +116,7 @@ export function StudentGradePieChart({
       responsive
     >
       <Pie
-        data={data}
+        data={sortedData}
         labelLine={false}
         label={renderCustomizedLabel}
         fill="#8884d8"
@@ -108,7 +124,14 @@ export function StudentGradePieChart({
         isAnimationActive={isAnimationActive}
         shape={MyCustomPie}
       ></Pie>
-      <Legend verticalAlign="top" align="right" height={56} layout="vertical" />
+      <Legend
+        verticalAlign="top"
+        align="right"
+        height={56}
+        layout="vertical"
+        formatter={renderColorfulLegendText}
+        itemSorter={"dataKey"}
+      />
 
       <RechartsDevtools />
     </PieChart>
