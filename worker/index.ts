@@ -20,6 +20,8 @@ type StudentBody = {
   name: string;
   phoneNumber: string;
   grade: string;
+  timePeriod: string;
+  classDate: string;
 };
 
 type UpdateBody = {
@@ -27,6 +29,8 @@ type UpdateBody = {
   name: string;
   phoneNumber: string;
   grade: string;
+  timePeriod: string;
+  classDate: string;
 };
 
 type PaymentUpdateBody = {
@@ -196,13 +200,13 @@ export default {
 
       if (url.pathname == "/students" && request.method === "POST") {
         const body: StudentBody = await request.json();
-        const { name, phoneNumber, grade } = body;
+        const { name, phoneNumber, grade, timePeriod, classDate } = body;
 
         const postResult = await env.DB.prepare(
-          `INSERT INTO students (name,phoneNumber,grade)
-        VALUES (?,?,?)`,
+          `INSERT INTO students (name,phoneNumber,grade, timePeriod, classDate)
+        VALUES (?,?,?,?,?)`,
         )
-          .bind(name, phoneNumber, grade)
+          .bind(name, phoneNumber, grade, timePeriod, classDate)
           .run();
 
         return new Response(
@@ -265,25 +269,31 @@ export default {
         }
         const body: UpdateBody = await request.json();
 
-        const { student_id, name, phoneNumber, grade } = body;
+        const { student_id, name, phoneNumber, grade, timePeriod, classDate } =
+          body;
 
         try {
           const updateResult = await env.DB.prepare(
-            `UPDATE students SET name = ?, phoneNumber = ?, grade = ? WHERE student_id = ?`,
+            `UPDATE students SET name = ?, phoneNumber = ?, grade = ?, timePeriod = ?, classDate = ? WHERE student_id = ?`,
           )
-            .bind(name, phoneNumber, grade, student_id)
+            .bind(name, phoneNumber, grade, timePeriod, classDate, student_id)
             .run();
+
+          console.log("Update result:", updateResult);
 
           return new Response(
             JSON.stringify({
               success: true,
-              student_id: updateResult.meta.changes,
+              changes: updateResult.meta.changes,
+              student_id,
             }),
             { headers: corsHeaders },
           );
         } catch (e: any) {
+          console.error("Update error:", e);
           return new Response(JSON.stringify({ error: e.message }), {
             status: 500,
+            headers: corsHeaders,
           });
         }
       }
