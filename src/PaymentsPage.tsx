@@ -72,6 +72,7 @@ export function PaymentsPage() {
       alert("Session expired! Please login again.");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
+      userRole?.setRole(null);
       navigate("/login");
       return;
     }

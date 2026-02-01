@@ -144,7 +144,10 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
         <PopUp message="Payment Added" color="green" onOrOff={true} />
       )}
 
-      <form className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-150 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <form
+        onSubmit={handleSubmit}
+        className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-150 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      >
         <div className="flex flex-col gap-2 p-5">
           <label>Choose the Student</label>
 
@@ -241,7 +244,6 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
         <div className="flex justify-evenly mb-5">
           <button
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-40 h-10 flex items-center justify-center"
-            onClick={handleSubmit}
             type="submit"
           >
             Add Payment

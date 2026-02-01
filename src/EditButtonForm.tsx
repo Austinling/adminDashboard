@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gradeMap } from "./GradeMap.ts";
+import { classDateArray } from "./ClassDate.ts";
+import { timePeriodArray } from "./TimePeriod.ts";
 import { PopUp } from "./PopUp.tsx";
 
 type StudentForm = {
@@ -9,6 +11,8 @@ type StudentForm = {
     student_id: number;
     phoneNumber: string;
     grade: string;
+    timePeriod: string;
+    classDate: string;
   };
   onClick: () => void;
   onSubmit: () => void;
@@ -21,17 +25,31 @@ export function EditButtonForm({ student, onClick, onSubmit }: StudentForm) {
   const [grade, setGrade] = useState(student.grade);
   const [showPopUp, setPopUp] = useState(false);
   const [showSuccessPopUp, setSuccessPopUp] = useState(false);
+  const [timePeriod, setTimePeriod] = useState(student.timePeriod);
+  const [classDate, setClassDate] = useState(student.classDate);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !phoneNumber.trim() || !grade) {
+    if (
+      !name.trim() ||
+      !phoneNumber.trim() ||
+      !grade ||
+      !timePeriod ||
+      !classDate
+    ) {
       setPopUp(false);
       setTimeout(() => setPopUp(true), 0);
       return;
-    } else if (name.trim() || phoneNumber.trim() || grade) {
+    } else if (
+      name.trim() ||
+      phoneNumber.trim() ||
+      grade ||
+      timePeriod ||
+      classDate
+    ) {
       setSuccessPopUp(false);
       setTimeout(() => setSuccessPopUp(true), 0);
     }
@@ -51,6 +69,8 @@ export function EditButtonForm({ student, onClick, onSubmit }: StudentForm) {
             name,
             phoneNumber,
             grade,
+            timePeriod,
+            classDate,
           }),
         });
 
@@ -59,16 +79,14 @@ export function EditButtonForm({ student, onClick, onSubmit }: StudentForm) {
           return;
         }
 
-        if (res.ok) {
-          setPopUp(true);
-          onSubmit();
-        }
-
         if (!res.ok) {
           const errorData = await res.json();
-          console.error("Worker Error:", errorData.error); // This will tell you if it's the "admin" issue
+          console.error("Worker Error:", errorData.error);
           return;
         }
+
+        setSuccessPopUp(true);
+        onSubmit();
       } catch (err) {
         console.error("Fetch error:", err);
       }
@@ -89,7 +107,10 @@ export function EditButtonForm({ student, onClick, onSubmit }: StudentForm) {
         <PopUp message="User Added" color="green" onOrOff={true} />
       )}
 
-      <form className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <form
+        onSubmit={handleSubmit}
+        className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-150 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      >
         <div className="flex flex-col gap-2 p-5">
           <label>Name</label>
           <input
@@ -122,16 +143,46 @@ export function EditButtonForm({ student, onClick, onSubmit }: StudentForm) {
             })}
           </select>
         </div>
+        <div className="flex flex-col gap-2  p-5">
+          <label>Class Date</label>
+          <select
+            value={classDate}
+            onChange={(e) => setClassDate(e.target.value)}
+          >
+            {classDateArray.map((value) => {
+              return (
+                <option key={value} value={value} className="border-2">
+                  {value}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="flex flex-col gap-2  p-5">
+          <label>Time Period</label>
+          <select
+            value={timePeriod}
+            onChange={(e) => setTimePeriod(e.target.value)}
+          >
+            {timePeriodArray.map((value) => {
+              return (
+                <option key={value} value={value} className="border-2">
+                  {value}
+                </option>
+              );
+            })}
+          </select>
+        </div>
         <div className="flex-1" />
         <div className="flex justify-evenly mb-5">
           <button
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-40 h-10 flex items-center justify-center"
-            onClick={handleSubmit}
             type="submit"
           >
-            Add Student
+            Edit Student
           </button>
           <button
+            type="button"
             onClick={onClick}
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-30 h-10 flex items-center justify-center"
           >

@@ -45,6 +45,9 @@ export function StudentsPage() {
       });
 
       if (res.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        userRole?.setRole(null);
         navigate("/login");
         return;
       }
@@ -86,6 +89,8 @@ export function StudentsPage() {
     if (res.status === 401) {
       alert("Session expired! Please login again.");
       localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      userRole?.setRole(null);
       navigate("/login");
       return;
     }
@@ -176,6 +181,9 @@ export function StudentsPage() {
           { header: "Name", render: (s) => s.name },
           { header: "Phone Number", render: (s) => s.phoneNumber },
           { header: "Grade", render: (s) => s.grade },
+          { header: "Time Period", render: (s) => s.timePeriod },
+          { header: "Class Date", render: (s) => s.classDate },
+
           ...(userRole?.role === "admin"
             ? [
                 {

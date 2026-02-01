@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { gradeMap } from "./GradeMap.ts";
+import { classDateArray } from "./ClassDate.ts";
+import { timePeriodArray } from "./TimePeriod.ts";
 import { PopUp } from "./PopUp.tsx";
 
 type StudentForm = {
@@ -12,6 +14,8 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [grade, setGrade] = useState("一年级（上）");
+  const [timePeriod, setTimePeriod] = useState("");
+  const [classDate, setClassDate] = useState("天天班");
   const [showPopUp, setPopUp] = useState(false);
   const [showSuccessPopUp, setSuccessPopUp] = useState(false);
 
@@ -36,12 +40,16 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
         name,
         phoneNumber,
         grade,
+        timePeriod,
+        classDate,
       }),
     });
 
     setName("");
     setPhoneNumber("");
     setGrade("");
+    setTimePeriod("");
+    setClassDate("");
     onSubmit();
   };
 
@@ -57,7 +65,10 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
         <PopUp message="User Added" color="green" onOrOff={true} />
       )}
 
-      <form className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <form
+        onSubmit={handleSubmit}
+        className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-150 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      >
         <div className="flex flex-col gap-2 p-5">
           <label>Name</label>
           <input
@@ -90,16 +101,46 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
             })}
           </select>
         </div>
+        <div className="flex flex-col gap-2  p-5">
+          <label>Class Date</label>
+          <select
+            value={classDate}
+            onChange={(e) => setClassDate(e.target.value)}
+          >
+            {classDateArray.map((value) => {
+              return (
+                <option key={value} value={value} className="border-2">
+                  {value}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="flex flex-col gap-2  p-5">
+          <label>Time Period</label>
+          <select
+            value={timePeriod}
+            onChange={(e) => setTimePeriod(e.target.value)}
+          >
+            {timePeriodArray.map((value) => {
+              return (
+                <option key={value} value={value} className="border-2">
+                  {value}
+                </option>
+              );
+            })}
+          </select>
+        </div>
         <div className="flex-1" />
         <div className="flex justify-evenly mb-5">
           <button
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-40 h-10 flex items-center justify-center"
-            onClick={handleSubmit}
             type="submit"
           >
             Add Student
           </button>
           <button
+            type="button"
             onClick={onClick}
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-30 h-10 flex items-center justify-center"
           >

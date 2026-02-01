@@ -3,4 +3,6 @@ export type Student = {
   student_id: number;
   phoneNumber: string;
   grade: string;
+  timePeriod: string;
+  classDate: string;
 };
