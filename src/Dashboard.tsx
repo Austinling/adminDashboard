@@ -6,11 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { PaymentStatusGraph } from "./PaymentStatusGraph.tsx";
 import { PaymentLineGraph } from "./PaymentLineGraph.tsx";
 import { PaymentLineDropDown } from "./PaymentLineDropDown.tsx";
+import { StudentPieChartDropDown } from "./StudentPieChartDropDown.tsx";
 
 export function Dashboard() {
   const [students, setStudents] = useState<Student[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [mode, setMode] = useState<string>("Number of Payments");
+  const [lineGraphMode, setLineGraphMode] =
+    useState<string>("Number of Payments");
+  const [pieChartMode, setPieChartMode] = useState<string>("Grade");
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
@@ -66,11 +69,15 @@ export function Dashboard() {
 
   return (
     <div className="grid grid-cols-3 h-screen gap-4 p-4">
-      <div className="bg-white border-2 rounded-4xl flex flex-col items-center justify-center col-span-2">
+      <div className="bg-white border-2 rounded-4xl flex flex-col items-center justify-center col-span-2 p-3">
         <div className="text-xl font-bold text-gray-800 mb-4">
-          Student Grades
+          {pieChartMode}
         </div>
-        <StudentGradePieChart students={students} />
+        <StudentGradePieChart mode={pieChartMode} students={students} />
+        <StudentPieChartDropDown
+          mode={pieChartMode}
+          setMode={setPieChartMode}
+        />
       </div>
       <div className="bg-white border-2 rounded-4xl flex flex-col items-center justify-center p-3">
         <div className="text-xl font-bold text-gray-800 mb-4">
@@ -80,9 +87,11 @@ export function Dashboard() {
       </div>
 
       <div className="bg-white border-2 rounded-4xl col-span-3 flex flex-col items-center justify-center p-3">
-        <div className="text-xl font-bold text-gray-800 mb-4">{mode}</div>
-        <PaymentLineGraph payments={payments} mode={mode} />
-        <PaymentLineDropDown mode={mode} setMode={setMode} />
+        <div className="text-xl font-bold text-gray-800 mb-4">
+          {lineGraphMode}
+        </div>
+        <PaymentLineGraph payments={payments} mode={lineGraphMode} />
+        <PaymentLineDropDown mode={lineGraphMode} setMode={setLineGraphMode} />
       </div>
     </div>
   );

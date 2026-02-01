@@ -19,6 +19,8 @@ const GRADE_COLORS: Record<string, string> = {
   "六年级（下）": "#ADB5BD", // Slate Gray
 };
 
+const colors = Object.values(GRADE_COLORS);
+
 const renderCustomizedLabel = ({
   cx,
   cy,
@@ -52,9 +54,9 @@ const renderCustomizedLabel = ({
 };
 
 const MyCustomPie = (props: PieSectorShapeProps) => {
-  const actualName = props.name as string;
+  const actualIndex = props.index;
 
-  const fillColor = GRADE_COLORS[actualName] || "#8884d8";
+  const fillColor = colors[actualIndex % colors.length] || "#8884d8";
 
   return <Sector {...props} fill={fillColor} />;
 };
@@ -62,6 +64,7 @@ const MyCustomPie = (props: PieSectorShapeProps) => {
 type StudentGrades = {
   isAnimationActive?: boolean;
   students: Student[];
+  mode: string;
 };
 
 const renderColorfulLegendText = (value: string, entry: any) => {
@@ -77,20 +80,31 @@ const renderColorfulLegendText = (value: string, entry: any) => {
 export function StudentGradePieChart({
   isAnimationActive = true,
   students,
+  mode,
 }: StudentGrades) {
   const data = students.reduce(
     (acc, value) => {
+      let valueToFind;
+
+      if (mode === "Grade") {
+        valueToFind = value.grade;
+      } else if (mode === "Class Date") {
+        valueToFind = value.classDate;
+      } else {
+        valueToFind = value.timePeriod;
+      }
+
       const doesGradeExist = acc.find(
-        (student) => student.name === value.grade,
+        (student) => student.name === valueToFind,
       );
 
       if (doesGradeExist) {
         doesGradeExist.value++;
       } else {
         acc.push({
-          name: value.grade,
+          name: valueToFind,
           value: 1,
-          fill: GRADE_COLORS[value.grade],
+          fill: colors[acc.length % colors.length] || "#8884d8",
         });
       }
 
@@ -116,7 +130,7 @@ export function StudentGradePieChart({
       responsive
     >
       <Pie
-        data={sortedData}
+        data={mode === "Grade" ? sortedData : data}
         labelLine={false}
         label={renderCustomizedLabel}
         fill="#8884d8"
