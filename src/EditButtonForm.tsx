@@ -79,9 +79,54 @@ export function EditButtonForm({ student, onClick, onSubmit }: StudentForm) {
           return;
         }
 
-        if (!res.ok) {
-          const errorData = await res.json();
-          console.error("Worker Error:", errorData.error);
+        const studentData = await res.json();
+        const newStudentId = studentData.student_id;
+
+        const changedBy = localStorage.getItem("email") || "Unknown Admin";
+        const action = "UPDATED";
+        const logDetails = {
+          name:
+            student.name != name
+              ? `${student.name} -> ${name}`
+              : "No Changes Made",
+          phoneNumber:
+            student.phoneNumber != phoneNumber
+              ? `${student.phoneNumber} -> ${phoneNumber}`
+              : "No Changes Made",
+          grade:
+            student.grade != grade
+              ? `${student.grade} -> ${grade}`
+              : "No Changes Made",
+          timePeriod:
+            student.timePeriod != timePeriod
+              ? `${student.timePeriod} -> ${timePeriod}`
+              : "No Changes Made",
+          classDate:
+            student.classDate != classDate
+              ? `${student.classDate} -> ${classDate}`
+              : "No Changes Made",
+        };
+
+        const logResponse = await fetch(
+          `${API_BASE}/student_logs?student_id=${newStudentId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              student_id: newStudentId,
+              action,
+              changed_by: changedBy,
+              details: JSON.stringify(logDetails),
+            }),
+          },
+        );
+
+        if (!logResponse.ok) {
+          const errorData = await logResponse.json();
+          console.error("Failed to create student log:", errorData);
           return;
         }
 
