@@ -399,6 +399,7 @@ export default {
           JSON.stringify({
             success: true,
             payment_id: postResult.meta.last_row_id,
+            student: student,
           }),
           { headers: corsHeaders },
         );
@@ -446,7 +447,8 @@ export default {
           return new Response(
             JSON.stringify({
               success: true,
-              payment_id: updateResult.meta.changes,
+              payment_id,
+              changes: updateResult.meta.changes,
             }),
             { headers: corsHeaders },
           );
@@ -530,7 +532,7 @@ export default {
         const { payment_id, action, changed_by, details } = body;
 
         const postResult = await env.DB.prepare(
-          `INSERT INTO student_logs (payment_id, action, changed_by, details)
+          `INSERT INTO payment_logs (payment_id, action, changed_by, details)
         VALUES (?,?,?,?)`,
         )
           .bind(payment_id, action, changed_by, details)

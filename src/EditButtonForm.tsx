@@ -149,7 +149,7 @@ export function EditButtonForm({ student, onClick, onSubmit }: StudentForm) {
       )}
 
       {showSuccessPopUp && (
-        <PopUp message="User Added" color="green" onOrOff={true} />
+        <PopUp message="User Edited" color="green" onOrOff={true} />
       )}
 
       <form

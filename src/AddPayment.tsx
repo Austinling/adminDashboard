@@ -56,21 +56,16 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
     if (
       !paid_for_period.trim() ||
       !amount.trim() ||
-      !status ||
+      !status.trim() ||
       !payment_date.trim()
     ) {
       setPopUp(false);
       setTimeout(() => setPopUp(true), 0);
       return;
-    } else if (
-      paid_for_period.trim() ||
-      amount.trim() ||
-      status ||
-      payment_date.trim()
-    ) {
-      setSuccessPopUp(false);
-      setTimeout(() => setSuccessPopUp(true), 0);
     }
+
+    setSuccessPopUp(false);
+    setTimeout(() => setSuccessPopUp(true), 0);
 
     if (!selectedStudent) {
       alert("Please select a student from the list");
@@ -79,7 +74,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
 
     console.log("Submitting payment for:", selectedStudent);
 
-    await fetch(`${API_BASE}/payments`, {
+    const paymentResponse = await fetch(`${API_BASE}/payments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -93,6 +88,43 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
         student: selectedStudent.name + " - " + selectedStudent.grade,
       }),
     });
+
+    const paymentData = await paymentResponse.json();
+    const newPaymentId = paymentData.payment_id;
+    const newStudent = paymentData.student;
+
+    const changedBy = localStorage.getItem("email") || "Unknown Admin";
+    const action = "CREATED";
+    const logDetails = {
+      student: newStudent,
+      paid_for_period,
+      amount,
+      status,
+      payment_date,
+    };
+
+    const logResponse = await fetch(
+      `${API_BASE}/payment_logs?payment_id=${newPaymentId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          payment_id: newPaymentId,
+          action,
+          changed_by: changedBy,
+          details: JSON.stringify(logDetails),
+        }),
+      },
+    );
+
+    if (!logResponse.ok) {
+      const errorData = await logResponse.json();
+      console.error("Failed to create payment log:", errorData);
+      return;
+    }
 
     setPeriod("");
     setAmount("");

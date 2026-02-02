@@ -64,6 +64,7 @@ export function EditPaymentForm({ payment, onClick, onSubmit }: PaymentForm) {
     e.preventDefault();
 
     if (
+      !selectedStudent ||
       !paid_for_period.trim() ||
       !amount.trim() ||
       !status ||
@@ -72,15 +73,9 @@ export function EditPaymentForm({ payment, onClick, onSubmit }: PaymentForm) {
       setPopUp(false);
       setTimeout(() => setPopUp(true), 0);
       return;
-    } else if (
-      paid_for_period.trim() ||
-      amount.trim() ||
-      status ||
-      payment_date.trim()
-    ) {
-      setSuccessPopUp(false);
-      setTimeout(() => setSuccessPopUp(true), 0);
     }
+    setSuccessPopUp(false);
+    setTimeout(() => setSuccessPopUp(true), 0);
 
     if (!selectedStudent) {
       alert("Please select a student from the list");
@@ -91,7 +86,7 @@ export function EditPaymentForm({ payment, onClick, onSubmit }: PaymentForm) {
 
     const token = localStorage.getItem("token");
 
-    await fetch(`${API_BASE}/payments`, {
+    const res = await fetch(`${API_BASE}/payments`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -107,6 +102,58 @@ export function EditPaymentForm({ payment, onClick, onSubmit }: PaymentForm) {
         student: selectedStudent.name + " - " + selectedStudent.grade,
       }),
     });
+
+    const paymentData = await res.json();
+    const newPaymentId = paymentData.payment_id;
+
+    const changedBy = localStorage.getItem("email") || "Unknown Admin";
+    const action = "UPDATED";
+
+    const logDetails = {
+      student:
+        payment.student != selectedStudent.name + " - " + selectedStudent.grade
+          ? `${payment.student} -> ${selectedStudent.name + " - " + selectedStudent.grade}`
+          : "No Changes Made",
+      paid_for_period:
+        payment.paid_for_period != paid_for_period
+          ? `${payment.paid_for_period} -> ${paid_for_period}`
+          : "No Changes Made",
+      amount:
+        payment.amount != amount
+          ? `${payment.amount} -> ${amount}`
+          : "No Changes Made",
+      status:
+        payment.status != status
+          ? `${payment.status} -> ${status}`
+          : "No Changes Made",
+      payment_date:
+        payment.payment_date != payment_date
+          ? `${payment.payment_date} -> ${payment_date}`
+          : "No Changes Made",
+    };
+
+    const logResponse = await fetch(
+      `${API_BASE}/payment_logs?payment_id=${newPaymentId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          payment_id: newPaymentId,
+          action,
+          changed_by: changedBy,
+          details: JSON.stringify(logDetails),
+        }),
+      },
+    );
+
+    if (!logResponse.ok) {
+      const errorData = await logResponse.json();
+      console.error("Failed to create student log:", errorData);
+      return;
+    }
 
     setCalendarRange({});
     onSubmit();
@@ -151,7 +198,7 @@ export function EditPaymentForm({ payment, onClick, onSubmit }: PaymentForm) {
       )}
 
       {showSuccessPopUp && (
-        <PopUp message="Payment Added" color="green" onOrOff={true} />
+        <PopUp message="Payment Edited" color="green" onOrOff={true} />
       )}
 
       <form

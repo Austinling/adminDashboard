@@ -11,6 +11,7 @@ import { PaymentFilter } from "./PaymentFilter.tsx";
 import { PaymentFilterButton } from "./PaymentFilterButton.tsx";
 import { EditPaymentForm } from "./EditPaymentForm.tsx";
 import { EditButton } from "./EditButton.tsx";
+import { PaymentLogs } from "./PaymentLogs.tsx";
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -31,6 +32,7 @@ export function PaymentsPage() {
   }>({});
 
   const [showEdit, setShowEdit] = useState<boolean>(false);
+  const [showPaymentLog, setShowPaymentLog] = useState<boolean>(false);
   const [editedPayment, setEditedPayment] = useState<Payment>();
 
   const API_BASE = import.meta.env.VITE_API_BASE;
@@ -210,7 +212,9 @@ export function PaymentsPage() {
       </div>
       {open && (
         <AddPayment
-          onSubmit={fetchPayments}
+          onSubmit={() => {
+            fetchPayments();
+          }}
           onClick={() => setPaymentOpen(false)}
         />
       )}
@@ -219,6 +223,12 @@ export function PaymentsPage() {
           payment={editedPayment}
           onSubmit={fetchPayments}
           onClick={() => setShowEdit(!showEdit)}
+        />
+      )}
+      {showPaymentLog && editedPayment && (
+        <PaymentLogs
+          paymentId={editedPayment.payment_id}
+          onClick={() => setShowPaymentLog(false)}
         />
       )}
       <Table
@@ -260,7 +270,7 @@ export function PaymentsPage() {
                       }}
                       onInfoClick={() => {
                         setEditedPayment(p);
-                        setShowEdit(!showEdit);
+                        setShowPaymentLog(!showPaymentLog);
                       }}
                     />
                   ),

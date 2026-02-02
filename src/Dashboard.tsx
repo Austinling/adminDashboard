@@ -7,6 +7,9 @@ import { PaymentStatusGraph } from "./PaymentStatusGraph.tsx";
 import { PaymentLineGraph } from "./PaymentLineGraph.tsx";
 import { PaymentLineDropDown } from "./PaymentLineDropDown.tsx";
 import { StudentPieChartDropDown } from "./StudentPieChartDropDown.tsx";
+import { Calendar } from "./Calendar.tsx";
+import { CalendarButton } from "./CalendarButton.tsx";
+import { MonthOrDayDropDown } from "./MonthOrDayDropDown.tsx";
 
 export function Dashboard() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -14,6 +17,14 @@ export function Dashboard() {
   const [lineGraphMode, setLineGraphMode] =
     useState<string>("Number of Payments");
   const [pieChartMode, setPieChartMode] = useState<string>("Grade");
+
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [calendarRange, setCalendarRange] = useState<{
+    from?: Date;
+    to?: Date;
+  }>({});
+  const [calendarMode, setCalendarMode] = useState<"single" | "range">("range");
+  const [monthOrDay, setMonthOrDay] = useState<string>("month");
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
@@ -91,7 +102,31 @@ export function Dashboard() {
           {lineGraphMode}
         </div>
         <PaymentLineGraph payments={payments} mode={lineGraphMode} />
-        <PaymentLineDropDown mode={lineGraphMode} setMode={setLineGraphMode} />
+        <div className="flex gap-3">
+          <PaymentLineDropDown
+            mode={lineGraphMode}
+            setMode={setLineGraphMode}
+          />
+          <CalendarButton
+            onClick={() => {
+              setCalendarOpen(!calendarOpen);
+              setCalendarMode("range");
+              setCalendarRange({});
+            }}
+            optionalText={"Change Mode"}
+          />
+          <MonthOrDayDropDown mode={monthOrDay} setMode={setMonthOrDay} />
+        </div>
+
+        {calendarOpen && (
+          <Calendar
+            open={calendarOpen}
+            range={calendarRange}
+            setRange={(calendarRange) => setCalendarRange(calendarRange)}
+            onClose={() => setCalendarOpen(!calendarOpen)}
+            mode={calendarMode}
+          />
+        )}
       </div>
     </div>
   );

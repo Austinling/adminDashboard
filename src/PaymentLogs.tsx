@@ -1,27 +1,27 @@
-import type { StudentLogType } from "./StudentLogType.ts";
+import type { PaymentLogType } from "./PaymentLogType.ts";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./Authorization";
 
 type StudentLogs = {
-  studentId: number | undefined;
+  paymentId: number | undefined;
   onClick: () => void;
 };
 
-export function StudentLogs({ studentId, onClick }: StudentLogs) {
-  const [studentLogs, setStudentLogs] = useState<StudentLogType[]>([]);
+export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
+  const [paymentLogs, setPaymentLogs] = useState<PaymentLogType[]>([]);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
 
   const userRole = useContext(UserContext);
 
-  const fetchStudentLogs = async () => {
+  const fetchPaymentLogs = async () => {
     const token = localStorage.getItem("token");
 
     try {
       const res = await fetch(
-        `${API_BASE}/student_logs?student_id=${studentId}`,
+        `${API_BASE}/payment_logs?payment_id=${paymentId}`,
         {
           method: "GET",
           headers: {
@@ -40,18 +40,18 @@ export function StudentLogs({ studentId, onClick }: StudentLogs) {
       }
 
       const data = await res.json();
-      setStudentLogs(data);
+      setPaymentLogs(data);
     } catch (err) {
       console.error("Fetch error:", err);
     }
   };
 
   useEffect(() => {
-    fetchStudentLogs();
+    fetchPaymentLogs();
   }, []);
 
-  const filteredLogs = studentLogs.filter((log) => {
-    return log.student_id == studentId;
+  const filteredLogs = paymentLogs.filter((log) => {
+    return log.payment_id == paymentId;
   });
 
   return (
@@ -72,20 +72,29 @@ export function StudentLogs({ studentId, onClick }: StudentLogs) {
                     <div>{log.changed_by}</div>
                   </div>
                   <div className="flex flex-col items-center">
-                    <div>
-                      <b>Name:</b> {detailsIntoJSON.name}
+                    <div className="flex flex-col text-center">
+                      <div>
+                        <b>Student:</b>
+                      </div>
+                      <div className="text-sm "> {detailsIntoJSON.student}</div>
+                    </div>
+                    <div className="flex flex-col text-center">
+                      <div>
+                        <b> Paid For Period:</b>{" "}
+                      </div>
+                      <div className="text-sm ">
+                        {detailsIntoJSON.paid_for_period}
+                      </div>
                     </div>
                     <div>
-                      <b>Phone Number:</b> {detailsIntoJSON.phoneNumber}
+                      <b>Amount:</b> {detailsIntoJSON.amount}
                     </div>
                     <div>
-                      <b>Grade:</b> {detailsIntoJSON.grade}
+                      <b>Status:</b> {detailsIntoJSON.status}
                     </div>
                     <div>
-                      <b>Time Period:</b> {detailsIntoJSON.timePeriod}
-                    </div>
-                    <div>
-                      <b>Class Date:</b> {detailsIntoJSON.classDate}
+                      <b>Payment Date: </b>
+                      {detailsIntoJSON.payment_date}
                     </div>
                   </div>
                 </div>
