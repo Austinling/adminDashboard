@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import type { StudentLogType } from "../src/StudentLogType";
+import type { PaymentLogType } from "../src/PaymentLogType";
 
 type Env = {
   DB: D1Database; // Cloudflare D1 binding
@@ -491,6 +492,54 @@ export default {
           JSON.stringify({
             success: true,
             student_id: deleteResult.meta.changes,
+          }),
+          { headers: corsHeaders },
+        );
+      }
+
+      //GET FOR PAYMENT_LOGS
+
+      if (url.pathname == "/payment_logs" && request.method === "GET") {
+        await verifyToken(request, env);
+
+        const payment_id = url.searchParams.get("payment_id");
+
+        if (!payment_id) {
+          return new Response(
+            JSON.stringify({ error: "payment_id parameter required" }),
+            { status: 400, headers: corsHeaders },
+          );
+        }
+
+        const result = await env.DB.prepare(
+          "SELECT * FROM payment_logs WHERE payment_id = ?",
+        )
+          .bind(payment_id)
+          .run();
+        return new Response(JSON.stringify(result.results), {
+          headers: corsHeaders,
+        });
+      }
+
+      //POST for PAYMENT_LOGS
+
+      if (url.pathname == "/payment_logs" && request.method === "POST") {
+        await verifyToken(request, env);
+
+        const body: PaymentLogType = await request.json();
+        const { payment_id, action, changed_by, details } = body;
+
+        const postResult = await env.DB.prepare(
+          `INSERT INTO student_logs (payment_id, action, changed_by, details)
+        VALUES (?,?,?,?)`,
+        )
+          .bind(payment_id, action, changed_by, details)
+          .run();
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            log_id: postResult.meta.last_row_id,
           }),
           { headers: corsHeaders },
         );
