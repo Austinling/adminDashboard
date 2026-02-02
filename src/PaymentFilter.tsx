@@ -6,6 +6,7 @@ import { Calendar } from "./Calendar";
 import { X } from "lucide-react";
 
 type PaymentFilterProp = {
+  open: boolean;
   paymentStatus: string;
   setPaymentStatus: (status: string) => void;
   minimumPayment: number;
@@ -24,6 +25,7 @@ type CalendarRange = {
 };
 
 export function PaymentFilter({
+  open,
   paymentStatus,
   setPaymentStatus,
   minimumPayment,
@@ -86,7 +88,13 @@ export function PaymentFilter({
   }, [paymentDateRange]);
 
   return (
-    <div className="absolute w-70 h-150 flex items-center justify-items-start border-2 bg-white border-gray-400 rounded-4xl z-100 top-10">
+    <div
+      className={`absolute w-70 bg-white border-2 border-gray-400 rounded-lg shadow-lg z-100 top-10 transform transition-all duration-300 ease-out origin-top ${
+        open
+          ? "opacity-100 translate-y-0 scale-100 pointer-events-auto visible"
+          : "opacity-0 -translate-y-2 scale-95 pointer-events-none invisible"
+      }`}
+    >
       <X
         className="absolute right-0 top-0 mr-3 mt-3 cursor-pointer hover:scale-110"
         onClick={onClose}

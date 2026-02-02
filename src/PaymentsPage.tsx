@@ -174,21 +174,20 @@ export function PaymentsPage() {
       <div className="flex p-5">
         <SearchBar searchName={searchName} searchingChange={setSearch} />
         <PaymentFilterButton open={filterOpen} setOpen={setFilterOpen} />
-        {filterOpen && (
-          <PaymentFilter
-            key={`${findMin(paymentAmounts)}-${findMax(paymentAmounts)}`}
-            paymentStatus={paymentStatus}
-            setPaymentStatus={setPaymentStatus}
-            minimumPayment={findMin(paymentAmounts)}
-            maximumPayment={findMax(paymentAmounts)}
-            setParentRange={setPaymentRange}
-            calendarRange={calendarRange}
-            setCalendarRange={setCalendarRange}
-            paymentDateRange={paymentDateRange}
-            setPaymentDateRange={setPaymentDateRange}
-            onClose={() => setFilterOpen(false)}
-          />
-        )}
+        <PaymentFilter
+          key={`${findMin(paymentAmounts)}-${findMax(paymentAmounts)}`}
+          open={filterOpen}
+          paymentStatus={paymentStatus}
+          setPaymentStatus={setPaymentStatus}
+          minimumPayment={findMin(paymentAmounts)}
+          maximumPayment={findMax(paymentAmounts)}
+          setParentRange={setPaymentRange}
+          calendarRange={calendarRange}
+          setCalendarRange={setCalendarRange}
+          paymentDateRange={paymentDateRange}
+          setPaymentDateRange={setPaymentDateRange}
+          onClose={() => setFilterOpen(false)}
+        />
         <div className="flex"></div>
         <div className="flex flex-1"></div>
         <div className="flex flex-row gap-3">

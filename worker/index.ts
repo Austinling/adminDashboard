@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
+import type { StudentLogType } from "../src/StudentLogType";
 
 type Env = {
   DB: D1Database; // Cloudflare D1 binding
@@ -296,6 +297,38 @@ export default {
             headers: corsHeaders,
           });
         }
+      }
+
+      //GET FOR STUDENTS_LOGS
+
+      if (url.pathname == "/student_logs" && request.method === "GET") {
+        const result = await env.DB.prepare("SELECT * FROM student_logs").all();
+
+        return new Response(JSON.stringify(result.results), {
+          headers: corsHeaders,
+        });
+      }
+
+      //POST for STUDENTS_LOGS
+
+      if (url.pathname == "/student_logs" && request.method === "POST") {
+        const body: StudentLogType = await request.json();
+        const { id, student_id, action, performed_by, created_at } = body;
+
+        const postResult = await env.DB.prepare(
+          `INSERT INTO students (student_id, action, performed_by)
+        VALUES (?,?,?)`,
+        )
+          .bind(student_id, action, performed_by)
+          .run();
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            student_id: postResult.meta.last_row_id,
+          }),
+          { headers: corsHeaders },
+        );
       }
 
       //GET FOR ATTENDANCE
