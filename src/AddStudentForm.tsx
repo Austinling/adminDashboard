@@ -14,28 +14,30 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [grade, setGrade] = useState("一年级（上）");
-  const [timePeriod, setTimePeriod] = useState("");
+  const [timePeriod, setTimePeriod] = useState(timePeriodArray[0] || "");
   const [classDate, setClassDate] = useState("天天班");
   const [showPopUp, setPopUp] = useState(false);
   const [showSuccessPopUp, setSuccessPopUp] = useState(false);
 
-  const [studentId, setStudentId] = useState<number>();
-  const [action, setAction] = useState<string>("");
-  const [performedB, setPerformedBy] = useState<string>("");
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !phoneNumber.trim() || !grade) {
+    if (
+      !name.trim() ||
+      !phoneNumber.trim() ||
+      !grade.trim() ||
+      !classDate.trim() ||
+      !timePeriod.trim()
+    ) {
       setPopUp(false);
       setTimeout(() => setPopUp(true), 0);
       return;
-    } else if (name.trim() || phoneNumber.trim() || grade) {
-      setSuccessPopUp(false);
-      setTimeout(() => setSuccessPopUp(true), 0);
     }
 
-    await fetch(`${API_BASE}/students`, {
+    setSuccessPopUp(false);
+    setTimeout(() => setSuccessPopUp(true), 0);
+
+    const studentResponse = await fetch(`${API_BASE}/students`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,19 +51,52 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
       }),
     });
 
-    await fetch(`${API_BASE}/student_logs`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    if (!studentResponse.ok) {
+      console.error("Failed to create student");
+      return;
+    }
+
+    const studentData = await studentResponse.json();
+    const newStudentId = studentData.student_id;
+
+    const changedBy = localStorage.getItem("email") || "Unknown Admin";
+    const action = "CREATED";
+    const logDetails = {
+      name,
+      phoneNumber,
+      grade,
+      timePeriod,
+      classDate,
+    };
+
+    const logResponse = await fetch(
+      `${API_BASE}/student_logs?student_id=${newStudentId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          student_id: newStudentId,
+          action,
+          changed_by: changedBy,
+          details: JSON.stringify(logDetails),
+        }),
       },
-      body: JSON.stringify({}),
-    });
+    );
+
+    if (!logResponse.ok) {
+      const errorData = await logResponse.json();
+      console.error("Failed to create student log:", errorData);
+      return;
+    }
 
     setName("");
     setPhoneNumber("");
-    setGrade("");
-    setTimePeriod("");
-    setClassDate("");
+    setGrade("一年级（上）");
+    setTimePeriod(timePeriodArray[0] || "");
+    setClassDate("天天班");
     onSubmit();
   };
 

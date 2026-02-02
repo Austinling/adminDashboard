@@ -35,6 +35,8 @@ export function ProtectedRoute() {
   useEffect(() => {
     if (isTokenExpired()) {
       localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("email");
       navigate("/login");
     }
   }, []);

@@ -23,6 +23,7 @@ export function StudentsPage() {
   const [isDelete, setDelete] = useState<boolean>(false);
   const [editedStudent, setEditedStudent] = useState<Student>();
   const [showEdit, setShowEdit] = useState<boolean>(false);
+  const [showInfo, setShowInfo] = useState<boolean>(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ export function StudentsPage() {
       if (res.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
+        localStorage.removeItem("email");
         userRole?.setRole(null);
         navigate("/login");
         return;
@@ -93,6 +95,7 @@ export function StudentsPage() {
       alert("Session expired! Please login again.");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
+      localStorage.removeItem("email");
       userRole?.setRole(null);
       navigate("/login");
       return;
@@ -168,7 +171,12 @@ export function StudentsPage() {
         />
       )}
 
-      <StudentLogs studentId={editedStudent?.student_id} />
+      {showInfo && editedStudent && (
+        <StudentLogs
+          studentId={editedStudent?.student_id}
+          onClick={() => setShowInfo(false)}
+        />
+      )}
 
       <Table
         data={filteredStudents}
@@ -206,6 +214,10 @@ export function StudentsPage() {
                       onClick={() => {
                         setEditedStudent(s);
                         setShowEdit(!showEdit);
+                      }}
+                      onInfoClick={() => {
+                        setEditedStudent(s);
+                        setShowInfo(!showInfo);
                       }}
                     />
                   ),

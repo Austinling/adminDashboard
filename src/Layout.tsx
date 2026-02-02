@@ -14,6 +14,8 @@ export function Layout() {
         <Navbar
           onClick={() => {
             localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("email");
             navigate("/login");
           }}
           navBarShow={headerShow}

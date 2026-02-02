@@ -32,6 +32,7 @@ export function Login() {
       return;
     }
 
+    localStorage.setItem("email", email);
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.role);
 
@@ -47,6 +48,7 @@ export function Login() {
         <div className="flex flex-col">
           <label>Username</label>
           <input
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="bg-gray-300 p-3"

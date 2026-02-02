@@ -3,9 +3,10 @@ import { useState, useRef, useEffect } from "react";
 
 type EditButtonProp = {
   onClick: () => void;
+  onInfoClick: () => void;
 };
 
-export function EditButton({ onClick }: EditButtonProp) {
+export function EditButton({ onClick, onInfoClick }: EditButtonProp) {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const thisRef = useRef<HTMLDivElement | null>(null);
 
@@ -35,7 +36,7 @@ export function EditButton({ onClick }: EditButtonProp) {
       </button>
 
       {showMenu && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1 overflow-hidden ">
+        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-20 py-1 overflow-hidden ">
           <button
             onClick={onClick}
             className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors border-t border-gray-100"
@@ -43,7 +44,10 @@ export function EditButton({ onClick }: EditButtonProp) {
             <SquarePen />
             Edit
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-100">
+          <button
+            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-100"
+            onClick={onInfoClick}
+          >
             <Info />
             About
           </button>

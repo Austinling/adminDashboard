@@ -302,8 +302,22 @@ export default {
       //GET FOR STUDENTS_LOGS
 
       if (url.pathname == "/student_logs" && request.method === "GET") {
-        const result = await env.DB.prepare("SELECT * FROM student_logs").all();
+        await verifyToken(request, env);
 
+        const student_id = url.searchParams.get("student_id");
+
+        if (!student_id) {
+          return new Response(
+            JSON.stringify({ error: "student_id parameter required" }),
+            { status: 400, headers: corsHeaders },
+          );
+        }
+
+        const result = await env.DB.prepare(
+          "SELECT * FROM student_logs WHERE student_id = ?",
+        )
+          .bind(student_id)
+          .run();
         return new Response(JSON.stringify(result.results), {
           headers: corsHeaders,
         });
@@ -312,20 +326,22 @@ export default {
       //POST for STUDENTS_LOGS
 
       if (url.pathname == "/student_logs" && request.method === "POST") {
+        await verifyToken(request, env);
+
         const body: StudentLogType = await request.json();
-        const { id, student_id, action, performed_by, created_at } = body;
+        const { student_id, action, changed_by, details } = body;
 
         const postResult = await env.DB.prepare(
-          `INSERT INTO students (student_id, action, performed_by)
-        VALUES (?,?,?)`,
+          `INSERT INTO student_logs (student_id, action, changed_by, details)
+        VALUES (?,?,?,?)`,
         )
-          .bind(student_id, action, performed_by)
+          .bind(student_id, action, changed_by, details)
           .run();
 
         return new Response(
           JSON.stringify({
             success: true,
-            student_id: postResult.meta.last_row_id,
+            log_id: postResult.meta.last_row_id,
           }),
           { headers: corsHeaders },
         );

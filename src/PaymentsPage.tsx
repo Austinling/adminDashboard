@@ -72,6 +72,7 @@ export function PaymentsPage() {
       alert("Session expired! Please login again.");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
+      localStorage.removeItem("email");
       userRole?.setRole(null);
       navigate("/login");
       return;
@@ -254,6 +255,10 @@ export function PaymentsPage() {
                   render: (p: Payment) => (
                     <EditButton
                       onClick={() => {
+                        setEditedPayment(p);
+                        setShowEdit(!showEdit);
+                      }}
+                      onInfoClick={() => {
                         setEditedPayment(p);
                         setShowEdit(!showEdit);
                       }}
