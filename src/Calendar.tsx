@@ -12,6 +12,7 @@ type CalendarType = {
   setRange: (range: CalendarRange) => void;
   onClose: () => void;
   mode: string;
+  maxDays?: number;
 };
 
 export function Calendar({
@@ -20,6 +21,7 @@ export function Calendar({
   setRange,
   onClose,
   mode,
+  maxDays,
 }: CalendarType) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -58,6 +60,15 @@ export function Calendar({
     if (!range.from || (range.from && range.to)) {
       setRange({ from: chosenDate, to: undefined });
       return;
+    }
+
+    if (maxDays && range.from) {
+      const differenceTime = Math.abs(
+        chosenDate.getTime() - range.from.getTime(),
+      );
+      const numOfDays = Math.ceil(differenceTime / (24 * 60 * 60 * 1000)) + 1;
+
+      if (numOfDays >= maxDays) return;
     }
 
     if (chosenDate < range.from) {
@@ -150,6 +161,18 @@ export function Calendar({
             currentDay > range.from &&
             currentDay < range.to;
 
+          const isTooFar =
+            maxDays &&
+            range.from &&
+            !range.to &&
+            currentDay &&
+            Math.ceil(
+              Math.abs(currentDay.getTime() - range.from.getTime()) /
+                (24 * 60 * 60 * 1000),
+            ) +
+              1 >=
+              maxDays;
+
           return (
             <div
               key={index}
@@ -167,7 +190,7 @@ export function Calendar({
                 handleSelect(new Date(year, month, day));
               }}
             >
-              {day}
+              {isTooFar ? null : day}
             </div>
           );
         })}
