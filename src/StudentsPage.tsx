@@ -1,6 +1,5 @@
 import { Table } from "./Table.tsx";
 import type { Student } from "./StudentType.ts";
-import type { StudentLogType } from "./StudentLogType.ts";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "./Authorization.tsx";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +10,10 @@ import { AddStudentForm } from "./AddStudentForm.tsx";
 import { DeleteButton } from "./DeleteButton.tsx";
 import { EditButton } from "./EditButton.tsx";
 import { EditButtonForm } from "./EditButtonForm.tsx";
+import { StudentLogs } from "./StudentLogs.tsx";
 
 export function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
-  const [studentLogs, setStudentLogs] = useState<StudentLogType[]>([]);
   const [searchName, setSearch] = useState<string>("");
   const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
   const [selectedTimePeriods, setSelectedTimePeriods] = useState<string[]>([]);
@@ -58,31 +57,6 @@ export function StudentsPage() {
 
       const data = await res.json();
       setStudents(data);
-    } catch (err) {
-      console.error("Fetch error:", err);
-    }
-  };
-
-  const fetchStudentLogs = async () => {
-    const token = localStorage.getItem("token");
-
-    try {
-      const res = await fetch(`${API_BASE}/student_logs`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (res.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        userRole?.setRole(null);
-        navigate("/login");
-        return;
-      }
-
-      const data = await res.json();
-      setStudentLogs(data);
     } catch (err) {
       console.error("Fetch error:", err);
     }
@@ -193,6 +167,8 @@ export function StudentsPage() {
           student={editedStudent}
         />
       )}
+
+      <StudentLogs studentId={editedStudent?.student_id} />
 
       <Table
         data={filteredStudents}

@@ -19,6 +19,10 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
   const [showPopUp, setPopUp] = useState(false);
   const [showSuccessPopUp, setSuccessPopUp] = useState(false);
 
+  const [studentId, setStudentId] = useState<number>();
+  const [action, setAction] = useState<string>("");
+  const [performedB, setPerformedBy] = useState<string>("");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -43,6 +47,14 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
         timePeriod,
         classDate,
       }),
+    });
+
+    await fetch(`${API_BASE}/student_logs`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
     });
 
     setName("");
