@@ -24,7 +24,7 @@ export function Dashboard() {
     to?: Date;
   }>({});
   const [calendarMode, setCalendarMode] = useState<"single" | "range">("range");
-  const [monthOrDay, setMonthOrDay] = useState<string>("month");
+  const [monthOrDay, setMonthOrDay] = useState<string>("Month");
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
@@ -101,21 +101,36 @@ export function Dashboard() {
         <div className="text-xl font-bold text-gray-800 mb-4">
           {lineGraphMode}
         </div>
-        <PaymentLineGraph payments={payments} mode={lineGraphMode} />
-        <div className="flex gap-3">
+        <PaymentLineGraph
+          payments={payments}
+          mode={lineGraphMode}
+          range={calendarRange}
+        />
+        <div className="flex gap-10">
           <PaymentLineDropDown
             mode={lineGraphMode}
             setMode={setLineGraphMode}
           />
-          <CalendarButton
-            onClick={() => {
-              setCalendarOpen(!calendarOpen);
-              setCalendarMode("range");
-              setCalendarRange({});
+          {monthOrDay == "Day" && (
+            <CalendarButton
+              onClick={() => {
+                setCalendarOpen(!calendarOpen);
+                setCalendarMode("range");
+                setCalendarRange({});
+              }}
+              optionalText={"Change Mode"}
+            />
+          )}
+          <MonthOrDayDropDown
+            mode={monthOrDay}
+            setMode={(value) => {
+              setMonthOrDay(value);
+              if (value === "Month") {
+                setCalendarOpen(false);
+                setCalendarRange({});
+              }
             }}
-            optionalText={"Change Mode"}
           />
-          <MonthOrDayDropDown mode={monthOrDay} setMode={setMonthOrDay} />
         </div>
 
         {calendarOpen && (
@@ -125,6 +140,7 @@ export function Dashboard() {
             setRange={(calendarRange) => setCalendarRange(calendarRange)}
             onClose={() => setCalendarOpen(!calendarOpen)}
             mode={calendarMode}
+            maxDays={12}
           />
         )}
       </div>

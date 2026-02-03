@@ -9,6 +9,7 @@ import {
 } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
 import type { Payment } from "./PaymentType";
+import { useState, useEffect } from "react";
 
 const numberToMonth = [
   "January",
@@ -28,27 +29,77 @@ const numberToMonth = [
 type PaymentLineGraphProp = {
   payments: Payment[];
   mode: string;
+  range?: {
+    from?: Date;
+    to?: Date;
+  };
 };
 
-export function PaymentLineGraph({ payments, mode }: PaymentLineGraphProp) {
+const formatToISO = (date: Date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+export function PaymentLineGraph({
+  payments,
+  mode,
+  range,
+}: PaymentLineGraphProp) {
+  const [rangeArray, setRangeArray] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!range) {
+      return;
+    }
+
+    if (range.from && range.to) {
+      const tempArray: string[] = [];
+
+      const tempDate = new Date(range.from);
+
+      while (tempDate <= range.to) {
+        tempArray.push(formatToISO(tempDate));
+        tempDate.setDate(tempDate.getDate() + 1);
+      }
+
+      setRangeArray(tempArray);
+      return;
+    }
+
+    if (range.from && !range.to) {
+      setRangeArray([formatToISO(range.from)]);
+      return;
+    }
+
+    setRangeArray([]);
+  }, [range?.from, range?.to]);
+
+  const source =
+    rangeArray && rangeArray.length > 0 ? rangeArray : numberToMonth;
+
   const count: Record<string, number> = Object.fromEntries(
-    numberToMonth.map((month) => {
-      return [month, 0];
+    source.map((item) => {
+      return [item, 0];
     }),
   );
 
   payments.forEach((payment) => {
-    const month = parseInt(payment.payment_date.split("-")[1]) - 1;
-    const nameOfMonth = numberToMonth[month];
+    const key =
+      rangeArray && rangeArray.length > 0
+        ? payment.payment_date
+        : source[parseInt(payment.payment_date.split("-")[1]) - 1];
 
-    const number = mode === "Tuition Fee" ? parseInt(payment.amount) : 1;
-
-    count[nameOfMonth] += number;
+    if (count.hasOwnProperty(key)) {
+      const valueToAdd = mode === "Tuition Fee" ? parseInt(payment.amount) : 1;
+      count[key] += valueToAdd;
+    }
   });
 
-  const monthObject = numberToMonth.map((month) => ({
-    name: month,
-    value: count[month],
+  const monthObject = source.map((item) => ({
+    name: item,
+    value: count[item],
   }));
 
   return (
@@ -64,13 +115,13 @@ export function PaymentLineGraph({ payments, mode }: PaymentLineGraphProp) {
       data={monthObject}
       margin={{
         top: 5,
-        right: 0,
-        left: 0,
+        right: 50,
+        left: 30,
         bottom: 5,
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" angle={-45} textAnchor="end" />
+      <XAxis dataKey="name" interval={0} angle={-45} textAnchor="end" />
       <YAxis width="auto" />
       <Tooltip />
       <Legend />
