@@ -10,12 +10,14 @@ import { StudentPieChartDropDown } from "./StudentPieChartDropDown.tsx";
 import { Calendar } from "./Calendar.tsx";
 import { CalendarButton } from "./CalendarButton.tsx";
 import { MonthOrDayDropDown } from "./MonthOrDayDropDown.tsx";
+import { useTranslation } from "react-i18next";
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const [students, setStudents] = useState<Student[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [lineGraphMode, setLineGraphMode] =
-    useState<string>("Number of Payments");
+    useState<string>("Number_Of_Payments");
   const [pieChartMode, setPieChartMode] = useState<string>("Grade");
 
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -82,7 +84,7 @@ export function Dashboard() {
     <div className="grid grid-cols-3 h-screen gap-4 p-4">
       <div className="bg-white border-2 rounded-4xl flex flex-col items-center justify-center col-span-2 p-3">
         <div className="text-xl font-bold text-gray-800 mb-4">
-          {pieChartMode}
+          {t(`${pieChartMode}`)}
         </div>
         <StudentGradePieChart mode={pieChartMode} students={students} />
         <StudentPieChartDropDown
@@ -92,14 +94,14 @@ export function Dashboard() {
       </div>
       <div className="bg-white border-2 rounded-4xl flex flex-col items-center justify-center p-3">
         <div className="text-xl font-bold text-gray-800 mb-4">
-          Payment Status
+          {t("Payment_Status")}
         </div>
         <PaymentStatusGraph payments={payments} />
       </div>
 
       <div className="bg-white border-2 rounded-4xl col-span-3 flex flex-col items-center justify-center p-3">
         <div className="text-xl font-bold text-gray-800 mb-4">
-          {lineGraphMode}
+          {t(`${lineGraphMode}`)}
         </div>
         <PaymentLineGraph
           payments={payments}
@@ -118,7 +120,7 @@ export function Dashboard() {
                 setCalendarMode("range");
                 setCalendarRange({});
               }}
-              optionalText={"Change Mode"}
+              optionalText={t("Change_Mode")}
             />
           )}
           <MonthOrDayDropDown

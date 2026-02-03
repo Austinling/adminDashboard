@@ -3,6 +3,7 @@ import { useState } from "react";
 import filter from "./assets/images/filter.png";
 import { timePeriodArray } from "./TimePeriod.ts";
 import { classDateArray } from "./ClassDate.ts";
+import { X } from "lucide-react";
 
 type FilterProps = {
   selectedGrades: string[];
@@ -73,6 +74,10 @@ export function Filter({
           : "opacity-0 -translate-y-3 scale-95 pointer-events-none"
       }`}
       >
+        <X
+          className="absolute right-0 top-0 mr-3 mt-3 cursor-pointer hover:scale-110"
+          onClick={() => setOpen(false)}
+        />
         <div className="flex flex-col gap-3">
           <h2 className="border-b-2 w-full text-center">Grades</h2>
           <div className="grid grid-cols-3 gap-4 p-4">

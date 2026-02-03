@@ -13,6 +13,8 @@ import { ProtectedRoute } from "./ProtectedRoute.tsx";
 import { ContainerContext } from "./Authorization.tsx";
 import { Dashboard } from "./Dashboard.tsx";
 
+import "./i18n";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ContainerContext>

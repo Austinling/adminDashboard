@@ -9,12 +9,14 @@ import {
   Bar,
 } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
+import { useTranslation } from "react-i18next";
 
 type PaymentStatusGraphProp = {
   payments: Payment[];
 };
 
 export function PaymentStatusGraph({ payments }: PaymentStatusGraphProp) {
+  const { t } = useTranslation();
   const paymentData = payments.reduce(
     (acc, value) => {
       if (value.status === "Paid") {
@@ -30,7 +32,7 @@ export function PaymentStatusGraph({ payments }: PaymentStatusGraphProp) {
 
   const data = [
     {
-      name: "Payments",
+      name: t("Payments"),
       Paid: paymentData.paid,
       Unpaid: paymentData.unpaid,
     },
@@ -58,8 +60,20 @@ export function PaymentStatusGraph({ payments }: PaymentStatusGraphProp) {
       <YAxis width="auto" />
       <Tooltip />
       <Legend />
-      <Bar dataKey="Paid" stackId="a" fill="#8884d8" background />
-      <Bar dataKey="Unpaid" stackId="a" fill="#82ca9d" background />
+      <Bar
+        dataKey="Paid"
+        name={t("Paid")}
+        stackId="a"
+        fill="#8884d8"
+        background
+      />
+      <Bar
+        dataKey="Unpaid"
+        name={t("Unpaid")}
+        stackId="a"
+        fill="#82ca9d"
+        background
+      />
       <RechartsDevtools />
     </BarChart>
   );

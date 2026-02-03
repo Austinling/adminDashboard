@@ -13,11 +13,13 @@
 	},
 	"dependencies": {
 		"@recharts/devtools": "^0.0.8",
+		"i18next": "^25.8.1",
 		"jose": "^6.1.3",
 		"lucide-react": "^0.563.0",
 		"rc-slider": "^11.1.9",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
+		"react-i18next": "^16.5.4",
 		"react-router-dom": "^7.13.0",
 		"recharts": "^3.7.0"
 	},

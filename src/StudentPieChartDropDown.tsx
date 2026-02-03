@@ -3,15 +3,18 @@ type StudentPieChartDropDownProp = {
   setMode: (mode: string) => void;
 };
 
+import { useTranslation } from "react-i18next";
+
 export function StudentPieChartDropDown({
   mode,
   setMode,
 }: StudentPieChartDropDownProp) {
+  const { t } = useTranslation();
   return (
     <select value={mode} onChange={(e) => setMode(e.target.value)}>
-      <option value="Grade">Grade</option>
-      <option value="Time Period">Time Period</option>
-      <option value="Class Date">Class Date</option>
+      <option value="Grade">{t("Grade")}</option>
+      <option value="Time Period">{t("Time Period")}</option>
+      <option value="Class Date">{t("Class Date")}</option>
     </select>
   );
 }

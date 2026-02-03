@@ -10,21 +10,7 @@ import {
 import { RechartsDevtools } from "@recharts/devtools";
 import type { Payment } from "./PaymentType";
 import { useState, useEffect } from "react";
-
-const numberToMonth = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { useTranslation } from "react-i18next";
 
 type PaymentLineGraphProp = {
   payments: Payment[];
@@ -48,6 +34,9 @@ export function PaymentLineGraph({
   range,
 }: PaymentLineGraphProp) {
   const [rangeArray, setRangeArray] = useState<string[]>([]);
+  const { t } = useTranslation();
+
+  const numberToMonth = t("Months", { returnObjects: true }) as string[];
 
   useEffect(() => {
     if (!range) {
@@ -92,7 +81,7 @@ export function PaymentLineGraph({
         : source[parseInt(payment.payment_date.split("-")[1]) - 1];
 
     if (count.hasOwnProperty(key)) {
-      const valueToAdd = mode === "Tuition Fee" ? parseInt(payment.amount) : 1;
+      const valueToAdd = mode === "Tuition_Fee" ? parseInt(payment.amount) : 1;
       count[key] += valueToAdd;
     }
   });
@@ -130,6 +119,7 @@ export function PaymentLineGraph({
         dataKey="value"
         stroke="#8884d8"
         activeDot={{ r: 8 }}
+        name={t("Total")}
       />
       <RechartsDevtools />
     </LineChart>
