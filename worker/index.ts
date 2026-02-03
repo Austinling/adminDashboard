@@ -47,6 +47,7 @@ type PaymentUpdateBody = {
 
 type Ids = {
   ids: number[];
+  userName: string;
 };
 
 type PaymentBody = {
@@ -225,14 +226,13 @@ export default {
       if (url.pathname == "/students" && request.method === "DELETE") {
         const payload = await verifyToken(request, env);
 
-        console.log("Current User Payload:", payload);
-
         if (payload.role !== "admin") {
           throw new Error("Forbidden: You aren't an admin");
         }
 
         const body: Ids = await request.json();
         const ids = body.ids;
+        const userName = body.userName;
 
         if (!Array.isArray(ids) || ids.length === 0) {
           return new Response(
@@ -246,16 +246,44 @@ export default {
 
         const deleteRequest = ids.map(() => "?").join(",");
 
-        const deleteResult = await env.DB.prepare(
-          `DELETE FROM students WHERE student_id in (${deleteRequest})`,
+        const selectResult = await env.DB.prepare(
+          `SELECT student_id, name, phoneNumber, grade, timePeriod, classDate FROM students WHERE student_id in (${deleteRequest})`,
         )
           .bind(...ids)
-          .run();
+          .all();
+
+        if (selectResult.results.length === 0) {
+          return new Response(JSON.stringify({ message: "No Ids Found" }));
+        }
+
+        let finalResponse = [];
+
+        for (const item of selectResult.results) {
+          finalResponse.push(
+            env.DB.prepare(
+              `INSERT INTO delete_logs (deleted_id, type, action, details, changed_by) VALUES (?,?,?,?,?)`,
+            ).bind(
+              item.student_id,
+              "Student Id",
+              "DELETED",
+              JSON.stringify(item),
+              userName,
+            ),
+          );
+        }
+
+        finalResponse.push(
+          env.DB.prepare(
+            `DELETE FROM students WHERE student_id in (${deleteRequest})`,
+          ).bind(...ids),
+        );
+
+        await env.DB.batch(finalResponse);
 
         return new Response(
           JSON.stringify({
             success: true,
-            student_id: deleteResult.meta.changes,
+            results: selectResult.results.length,
           }),
           { headers: corsHeaders },
         );
@@ -346,16 +374,6 @@ export default {
           }),
           { headers: corsHeaders },
         );
-      }
-
-      //GET FOR ATTENDANCE
-
-      if (url.pathname == "/attendance" && request.method === "GET") {
-        const result = await env.DB.prepare("SELECT * FROM attendance").all();
-
-        return new Response(JSON.stringify(result.results), {
-          headers: corsHeaders,
-        });
       }
 
       //GET FOR PAYMENTS
@@ -471,6 +489,7 @@ export default {
 
         const body: Ids = await request.json();
         const ids = body.ids;
+        const userName = body.userName;
 
         if (!Array.isArray(ids) || ids.length === 0) {
           return new Response(
@@ -484,16 +503,47 @@ export default {
 
         const deleteRequest = ids.map(() => "?").join(",");
 
-        const deleteResult = await env.DB.prepare(
-          `DELETE FROM payments WHERE payment_id in (${deleteRequest})`,
+        const selectRequest = await env.DB.prepare(
+          `SELECT payment_id ,student_id,paid_for_period,amount, status, payment_date,student FROM payments WHERE payment_id in (${deleteRequest}) `,
         )
           .bind(...ids)
-          .run();
+          .all();
+
+        if (selectRequest.results.length === 0) {
+          return new Response(
+            JSON.stringify({
+              details: "No Ids Given",
+            }),
+          );
+        }
+
+        const finalPaymentResponse = [];
+
+        for (const item of selectRequest.results) {
+          finalPaymentResponse.push(
+            env.DB.prepare(
+              `INSERT INTO delete_logs (deleted_id, type, action, details, changed_by) VALUES (?,?,?,?,?)`,
+            ).bind(
+              item.payment_id,
+              "Payment",
+              "DELETED",
+              JSON.stringify(item),
+              userName,
+            ),
+          );
+        }
+
+        finalPaymentResponse.push(
+          env.DB.prepare(
+            `DELETE FROM payments WHERE payment_id in (${deleteRequest})`,
+          ).bind(...ids),
+        );
+
+        await env.DB.batch(finalPaymentResponse);
 
         return new Response(
           JSON.stringify({
             success: true,
-            student_id: deleteResult.meta.changes,
           }),
           { headers: corsHeaders },
         );

@@ -107,6 +107,7 @@ export function PaymentsPage() {
       },
       body: JSON.stringify({
         ids: selectedKeys,
+        userName: localStorage.getItem("email") || "Unknow Admin",
       }),
     });
 

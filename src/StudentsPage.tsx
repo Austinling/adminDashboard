@@ -88,6 +88,7 @@ export function StudentsPage() {
       },
       body: JSON.stringify({
         ids: selectedKeys,
+        userName: localStorage.getItem("email") || "Unknown Admin",
       }),
     });
 
