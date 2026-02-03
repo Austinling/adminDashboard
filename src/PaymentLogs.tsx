@@ -89,6 +89,15 @@ export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
                     <div>
                       <b>Amount:</b> {detailsIntoJSON.amount}
                     </div>
+                    <div className="flex flex-col text-center">
+                      <div>
+                        <b>Amount Type:</b>
+                      </div>
+                      <div className="text-sm ">
+                        {" "}
+                        {detailsIntoJSON.amountType}
+                      </div>
+                    </div>
                     <div>
                       <b>Status:</b> {detailsIntoJSON.status}
                     </div>

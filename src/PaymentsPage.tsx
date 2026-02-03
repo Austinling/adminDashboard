@@ -257,6 +257,7 @@ export function PaymentsPage() {
           { header: "Student", render: (p) => p.student },
           { header: "Payment Period", render: (p) => p.paid_for_period },
           { header: "Amount (MMK)", render: (p) => p.amount },
+          { header: "Amount Type", render: (p) => p.amountType },
           { header: "Status", render: (p) => p.status },
           { header: "Payment Date", render: (p) => p.payment_date },
           ...(userRole?.role === "admin"

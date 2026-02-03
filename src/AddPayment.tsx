@@ -15,6 +15,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
   const [userInput, setUserInput] = useState("");
   const [paid_for_period, setPeriod] = useState("");
   const [amount, setAmount] = useState("");
+  const [amountType, setAmountType] = useState("");
   const [status, setStatus] = useState("Unpaid");
   const [payment_date, setPaymentDate] = useState("");
   const [showPopUp, setPopUp] = useState(false);
@@ -86,6 +87,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
         status,
         payment_date,
         student: selectedStudent.name + " - " + selectedStudent.grade,
+        amountType,
       }),
     });
 
@@ -101,6 +103,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
       amount,
       status,
       payment_date,
+      amountType,
     };
 
     const logResponse = await fetch(
@@ -178,7 +181,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
 
       <form
         onSubmit={handleSubmit}
-        className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-150 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-120 h-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-auto"
       >
         <div className="flex flex-col gap-2 p-5">
           <label>Choose the Student</label>
@@ -238,6 +241,16 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
             placeholder="Amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
+            className="bg-gray-300 p-3"
+          ></input>
+        </div>
+        <div className="flex flex-col gap-2 p-5">
+          <label>Amount Type</label>
+          <input
+            required
+            placeholder="Amount Type"
+            value={amountType}
+            onChange={(e) => setAmountType(e.target.value)}
             className="bg-gray-300 p-3"
           ></input>
         </div>

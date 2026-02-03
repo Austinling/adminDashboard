@@ -43,6 +43,7 @@ type PaymentUpdateBody = {
   status: string;
   payment_date: string;
   student?: string;
+  amountType: string;
 };
 
 type Ids = {
@@ -57,6 +58,7 @@ type PaymentBody = {
   status: string;
   payment_date: string;
   student?: string;
+  amountType: string;
 };
 
 export default {
@@ -397,11 +399,12 @@ export default {
           status,
           payment_date,
           student,
+          amountType,
         } = body;
 
         const postResult = await env.DB.prepare(
-          `INSERT INTO payments (student_id,paid_for_period,amount,status,payment_date,student)
-        VALUES (?,?,?,?,?,?)`,
+          `INSERT INTO payments (student_id,paid_for_period,amount,status,payment_date,student,amountType)
+        VALUES (?,?,?,?,?,?,?)`,
         )
           .bind(
             student_id,
@@ -410,6 +413,7 @@ export default {
             status,
             payment_date,
             student,
+            amountType,
           )
           .run();
 
@@ -446,10 +450,11 @@ export default {
             status,
             payment_date,
             student,
+            amountType,
           } = body;
 
           const updateResult = await env.DB.prepare(
-            `UPDATE payments SET student_id = ?, paid_for_period = ?, amount = ?, status = ?, payment_date = ?, student = ? WHERE payment_id = ?`,
+            `UPDATE payments SET student_id = ?, paid_for_period = ?, amount = ?, status = ?, payment_date = ?, student = ?, amountType = ? WHERE payment_id = ?`,
           )
             .bind(
               student_id,
@@ -459,6 +464,7 @@ export default {
               payment_date,
               student,
               payment_id,
+              amountType,
             )
             .run();
 
@@ -504,7 +510,7 @@ export default {
         const deleteRequest = ids.map(() => "?").join(",");
 
         const selectRequest = await env.DB.prepare(
-          `SELECT payment_id ,student_id,paid_for_period,amount, status, payment_date,student FROM payments WHERE payment_id in (${deleteRequest}) `,
+          `SELECT payment_id ,student_id,paid_for_period,amount, status, payment_date,student,amountType FROM payments WHERE payment_id in (${deleteRequest}) `,
         )
           .bind(...ids)
           .all();
