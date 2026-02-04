@@ -1,4 +1,5 @@
 import search from "./assets/images/search.png";
+import { useTranslation } from "react-i18next";
 
 type searchBarType = {
   searchName: string;
@@ -6,6 +7,7 @@ type searchBarType = {
 };
 
 export function SearchBar({ searchName, searchingChange }: searchBarType) {
+  const { t } = useTranslation();
   return (
     <>
       <div className="">
@@ -15,7 +17,7 @@ export function SearchBar({ searchName, searchingChange }: searchBarType) {
             className="flex-1 focus:outline-none bg-transparent px-10 py-3"
             value={searchName}
             onChange={(e) => searchingChange(e.target.value)}
-            placeholder="Search..."
+            placeholder={t("Search")}
           ></input>
           <button className="absolute top-1/2 -translate-y-1/2 px-3">
             <img src={search} alt="searchIcon" className="w-5"></img>

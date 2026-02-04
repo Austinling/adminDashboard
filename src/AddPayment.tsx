@@ -3,6 +3,7 @@ import { PopUp } from "./PopUp.tsx";
 import { Calendar } from "./Calendar.tsx";
 import { CalendarButton } from "./CalendarButton.tsx";
 import type { Student } from "./StudentType.ts";
+import { useTranslation } from "react-i18next";
 
 type PaymentForm = {
   onClick: () => void;
@@ -29,7 +30,8 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>();
 
-  const statusMap = ["Unpaid", "Paid"];
+  const { t } = useTranslation();
+  const statusMap = [t("Unpaid"), t("Paid")];
 
   const fetchStudents = () => {
     fetch(`${API_BASE}/students`)
@@ -184,7 +186,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
         className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-120 h-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-auto"
       >
         <div className="flex flex-col gap-2 p-5">
-          <label>Choose the Student</label>
+          <label>{t("Choose_The_Student")}</label>
 
           <div className="flex flex-col gap-5">
             <input
@@ -216,7 +218,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
             )}
           </div>
 
-          <label>Paid for Period</label>
+          <label>{t("Paid_For_Period")}</label>
 
           <div className="flex gap-5">
             <input
@@ -231,31 +233,32 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
                 setCalendarMode("range");
                 setCalendarRange({});
               }}
+              optionalText={t("Choose_Day")}
             />
           </div>
         </div>
         <div className="flex flex-col gap-2 p-5">
-          <label>Amount (MMK)</label>
+          <label>{t("Amount")}</label>
           <input
             required
-            placeholder="Amount"
+            placeholder={t("Amount")}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             className="bg-gray-300 p-3"
           ></input>
         </div>
         <div className="flex flex-col gap-2 p-5">
-          <label>Amount Type</label>
+          <label>{t("Amount_Type")}</label>
           <input
             required
-            placeholder="Amount Type"
+            placeholder={t("Amount_Type")}
             value={amountType}
             onChange={(e) => setAmountType(e.target.value)}
             className="bg-gray-300 p-3"
           ></input>
         </div>
         <div className="flex flex-col gap-2  p-5">
-          <label>Status</label>
+          <label>{t("Status")}</label>
           <select value={status} onChange={(e) => setStatus(e.target.value)}>
             {statusMap.map((status, index) => {
               return (
@@ -267,7 +270,7 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
           </select>
         </div>
         <div className="flex flex-col gap-2 p-5">
-          <label>Payment Date</label>
+          <label>{t("Payment_Date")}</label>
 
           <div className="flex gap-5">
             <input
@@ -282,7 +285,8 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
                 setCalendarMode("single");
                 setCalendarRange({});
               }}
-            />{" "}
+              optionalText={t("Choose_Day")}
+            />
           </div>
         </div>
         <div className="flex-1" />
@@ -291,14 +295,14 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-40 h-10 flex items-center justify-center"
             type="submit"
           >
-            Add Payment
+            {t("Add_Payment")}
           </button>
           <button
             type="button"
             onClick={onClick}
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-30 h-10 flex items-center justify-center"
           >
-            Close
+            {t("Close")}
           </button>
         </div>
       </form>

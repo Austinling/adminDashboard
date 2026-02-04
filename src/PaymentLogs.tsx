@@ -2,6 +2,7 @@ import type { PaymentLogType } from "./PaymentLogType.ts";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./Authorization";
+import { useTranslation } from "react-i18next";
 
 type StudentLogs = {
   paymentId: number | undefined;
@@ -10,6 +11,7 @@ type StudentLogs = {
 
 export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
   const [paymentLogs, setPaymentLogs] = useState<PaymentLogType[]>([]);
+  const { t } = useTranslation();
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
@@ -67,31 +69,31 @@ export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
               <>
                 <div className="p-3 flex flex-col items-center">
                   <div className="flex gap-3 border-b-2 font-bold mb-2">
-                    <div>{log.action}</div>
+                    <div>{t(`${log.action}`)}</div>
                     <div>{log.created_at}</div>
                     <div>{log.changed_by}</div>
                   </div>
                   <div className="flex flex-col items-center">
                     <div className="flex flex-col text-center">
                       <div>
-                        <b>Student:</b>
+                        <b>{t("Student")}:</b>
                       </div>
                       <div className="text-sm "> {detailsIntoJSON.student}</div>
                     </div>
                     <div className="flex flex-col text-center">
                       <div>
-                        <b> Paid For Period:</b>{" "}
+                        <b> {t("Paid_For_Period")}:</b>
                       </div>
                       <div className="text-sm ">
                         {detailsIntoJSON.paid_for_period}
                       </div>
                     </div>
                     <div>
-                      <b>Amount:</b> {detailsIntoJSON.amount}
+                      <b>{t("Amount")}:</b> {detailsIntoJSON.amount}
                     </div>
                     <div className="flex flex-col text-center">
                       <div>
-                        <b>Amount Type:</b>
+                        <b>{t("Amount_Type")}:</b>
                       </div>
                       <div className="text-sm ">
                         {" "}
@@ -99,10 +101,10 @@ export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
                       </div>
                     </div>
                     <div>
-                      <b>Status:</b> {detailsIntoJSON.status}
+                      <b>{t("Status")}:</b> {detailsIntoJSON.status}
                     </div>
                     <div>
-                      <b>Payment Date: </b>
+                      <b>{t("Payment_Date")}: </b>
                       {detailsIntoJSON.payment_date}
                     </div>
                   </div>
@@ -116,7 +118,7 @@ export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
           onClick={onClick}
           className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-30 h-10 flex items-center justify-center mb-4"
         >
-          Close
+          {t("Close")}
         </button>
       </div>
     </>

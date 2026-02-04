@@ -1,5 +1,6 @@
 import { Ellipsis, SquarePen, Info } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 type EditButtonProp = {
   onClick: () => void;
@@ -9,6 +10,7 @@ type EditButtonProp = {
 export function EditButton({ onClick, onInfoClick }: EditButtonProp) {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const thisRef = useRef<HTMLDivElement | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!showMenu) return;
@@ -42,14 +44,14 @@ export function EditButton({ onClick, onInfoClick }: EditButtonProp) {
             className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors border-t border-gray-100"
           >
             <SquarePen />
-            Edit
+            {t("Edit")}
           </button>
           <button
             className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-100"
             onClick={onInfoClick}
           >
             <Info />
-            About
+            {t("About")}
           </button>
         </div>
       )}

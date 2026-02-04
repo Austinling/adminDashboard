@@ -11,6 +11,7 @@ import { DeleteButton } from "./DeleteButton.tsx";
 import { EditButton } from "./EditButton.tsx";
 import { EditButtonForm } from "./EditButtonForm.tsx";
 import { StudentLogs } from "./StudentLogs.tsx";
+import { useTranslation } from "react-i18next";
 
 export function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -24,6 +25,8 @@ export function StudentsPage() {
   const [editedStudent, setEditedStudent] = useState<Student>();
   const [showEdit, setShowEdit] = useState<boolean>(false);
   const [showInfo, setShowInfo] = useState<boolean>(false);
+
+  const { t } = useTranslation();
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
@@ -141,7 +144,7 @@ export function StudentsPage() {
         <div className="flex flex-row gap-3">
           <AddStudentButton
             onClick={() => setAddOpen(!addOpen)}
-            message="Add Button"
+            message={t("Add_Student")}
           />
           {userRole?.role === "admin" && (
             <DeleteButton
@@ -184,7 +187,7 @@ export function StudentsPage() {
         getKey={(s) => s.student_id}
         columns={[
           {
-            header: "Student ID",
+            header: t("Student_ID"),
             render: (s) => (
               <div className="flex items-center justify-center gap-10">
                 {isDelete && (
@@ -200,11 +203,11 @@ export function StudentsPage() {
               </div>
             ),
           },
-          { header: "Name", render: (s) => s.name },
-          { header: "Phone Number", render: (s) => s.phoneNumber },
-          { header: "Grade", render: (s) => s.grade },
-          { header: "Time Period", render: (s) => s.timePeriod },
-          { header: "Class Date", render: (s) => s.classDate },
+          { header: t("Name"), render: (s) => s.name },
+          { header: t("Phone_Number"), render: (s) => s.phoneNumber },
+          { header: t("Grade"), render: (s) => s.grade },
+          { header: t("Time_Period"), render: (s) => s.timePeriod },
+          { header: t("Class_Date"), render: (s) => s.classDate },
 
           ...(userRole?.role === "admin"
             ? [

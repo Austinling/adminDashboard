@@ -4,6 +4,7 @@ import filter from "./assets/images/filter.png";
 import { timePeriodArray } from "./TimePeriod.ts";
 import { classDateArray } from "./ClassDate.ts";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type FilterProps = {
   selectedGrades: string[];
@@ -23,6 +24,7 @@ export function Filter({
   setSelectedClassDates,
 }: FilterProps) {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const filterGrades = (grade: string) => {
     if (selectedGrades.includes(grade) && open) {
@@ -62,7 +64,7 @@ export function Filter({
         className="w-30 flex justify-center items-center text-gray-500 cursor-pointer relative z-10"
         onClick={() => setOpen(!open)}
       >
-        Filter
+        {t("Filter")}
         <img src={filter} alt="filter" className="w-5 ml-4"></img>
       </button>
 
@@ -79,7 +81,7 @@ export function Filter({
           onClick={() => setOpen(false)}
         />
         <div className="flex flex-col gap-3">
-          <h2 className="border-b-2 w-full text-center">Grades</h2>
+          <h2 className="border-b-2 w-full text-center">{t("Grade")}</h2>
           <div className="grid grid-cols-3 gap-4 p-4">
             {Object.entries(gradeMap).map(([key, value]) => {
               const checked = selectedGrades.includes(value);
@@ -96,7 +98,7 @@ export function Filter({
               );
             })}
           </div>
-          <h2 className="border-b-2 w-full text-center">Time Periods</h2>
+          <h2 className="border-b-2 w-full text-center">{t("Time_Period")}</h2>
           <div className="grid grid-cols-3 gap-4 p-4">
             {timePeriodArray.map((value) => {
               const timePeriodChecked = selectedTimePeriods?.includes(value);
@@ -113,7 +115,7 @@ export function Filter({
               );
             })}
           </div>
-          <h2 className="border-b-2 w-full text-center">Class Dates</h2>
+          <h2 className="border-b-2 w-full text-center">{t("Class_Date")}</h2>
           <div className="grid grid-cols-3 gap-4 p-4">
             {classDateArray.map((value) => {
               const classDateChecked = selectedClassDates?.includes(value);

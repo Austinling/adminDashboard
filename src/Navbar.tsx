@@ -1,5 +1,6 @@
 import { UsersRound, WalletCards, GraduationCap, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type Navbar = {
   onClick: () => void;
@@ -10,6 +11,8 @@ export function Navbar({ onClick, navBarShow }: Navbar) {
   if (!navBarShow) {
     return null;
   }
+
+  const { t } = useTranslation();
 
   return (
     <div className="bg-red-300 w-50 flex shadow-lg flex-col gap-6 mr-10">
@@ -22,7 +25,7 @@ export function Navbar({ onClick, navBarShow }: Navbar) {
             <GraduationCap className="w-8 h-8 text-white group-hover:text-red-300" />
           </div>
           <div className="text-white diphylleia-regular text-1xl group-hover:text-red-300">
-            Dashboard
+            {t("Dashboard")}
           </div>
         </Link>
         <Link
@@ -33,7 +36,7 @@ export function Navbar({ onClick, navBarShow }: Navbar) {
             <UsersRound className="w-8 h-8 text-white group-hover:text-red-300" />
           </div>
           <div className="text-white diphylleia-regular text-1xl group-hover:text-red-300">
-            Students
+            {t("Students")}
           </div>
         </Link>
 
@@ -45,7 +48,7 @@ export function Navbar({ onClick, navBarShow }: Navbar) {
             <GraduationCap className="w-8 h-8 text-white group-hover:text-red-300" />
           </div>
           <div className="text-white diphylleia-regular text-1xl group-hover:text-red-300">
-            Teachers
+            {t("Teachers")}
           </div>
         </Link>
 
@@ -57,7 +60,7 @@ export function Navbar({ onClick, navBarShow }: Navbar) {
             <WalletCards className="w-8 h-8 text-white group-hover:text-red-300" />
           </div>
           <div className="text-white diphylleia-regular text-1xl group-hover:text-red-300">
-            Payments
+            {t("Payments")}
           </div>
         </Link>
       </div>
@@ -68,7 +71,7 @@ export function Navbar({ onClick, navBarShow }: Navbar) {
         <div className="flex gap-3 mb-5 group hover:bg-white w-full justify-center items-center h-10 ">
           <LogOut className="w-8 h-8 text-white group-hover:text-red-300" />
           <div className="text-white group-hover:text-red-300 diphylleia-regular text-1xl">
-            Logout
+            {t("Logout")}
           </div>
         </div>
       </button>

@@ -4,6 +4,7 @@ import "rc-slider/assets/index.css";
 import { CalendarButton } from "./CalendarButton";
 import { Calendar } from "./Calendar";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type PaymentFilterProp = {
   open: boolean;
@@ -58,6 +59,7 @@ export function PaymentFilter({
   const [periodCalendarOpen, setPeriodCalendarOpen] = useState(false);
   const [dateCalendarOpen, setDateCalendarOpen] = useState(false);
   const [paymentDate, setPaymentDate] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     setPaymentRange([minimumPayment, maximumPayment]);
@@ -101,7 +103,7 @@ export function PaymentFilter({
       />
       <div>
         <div className="p-3">
-          <h3 className="border-b-2 mb-5">Payment Period</h3>
+          <h3 className="border-b-2 mb-5">{t("Payment_Period")}</h3>
           <div className="flex flex-col gap-5">
             <input
               required
@@ -123,10 +125,11 @@ export function PaymentFilter({
                 setPeriodCalendarOpen(!periodCalendarOpen);
                 setCalendarRange({});
               }}
+              optionalText={t("Choose_Day")}
             />
           </div>
 
-          <h3 className="border-b-2 mb-5">Payment Date</h3>
+          <h3 className="border-b-2 mb-5">{t("Payment_Date")}</h3>
           <div className="flex flex-col gap-5">
             <input
               required
@@ -150,11 +153,12 @@ export function PaymentFilter({
                 setDateCalendarOpen(!dateCalendarOpen);
                 setPaymentDateRange({});
               }}
+              optionalText={t("Choose_Day")}
             />
           </div>
 
           <div className="p-3">
-            <h3 className="border-b-2 mb-5">Tuition Fee</h3>
+            <h3 className="border-b-2 mb-5">{t("Tuition_Fee")}</h3>
             <Slider
               range
               id="2"
@@ -171,7 +175,7 @@ export function PaymentFilter({
             />
           </div>
           <div className="p-3">
-            <h3 className="border-b-2">Payment Status</h3>
+            <h3 className="border-b-2">{t("Payment_Status")}</h3>
             <div className="flex gap-3 p-3">
               <button
                 className={`border-2 w-20 hover:bg-gray-200 ${paymentStatus === "Paid" ? "bg-gray-500 text-white " : "bg-white"}`}
@@ -180,7 +184,7 @@ export function PaymentFilter({
                   setPaymentStatus(newPayment);
                 }}
               >
-                Paid
+                {t("Paid")}
               </button>
               <button
                 className={`border-2 w-20 hover:bg-gray-200 ${paymentStatus === "Unpaid" ? "bg-gray-500 text-white " : "bg-white"}`}
@@ -189,7 +193,7 @@ export function PaymentFilter({
                   setPaymentStatus(newPayment);
                 }}
               >
-                Unpaid
+                {t("Unpaid")}
               </button>
             </div>
           </div>

@@ -12,6 +12,7 @@ import { PaymentFilterButton } from "./PaymentFilterButton.tsx";
 import { EditPaymentForm } from "./EditPaymentForm.tsx";
 import { EditButton } from "./EditButton.tsx";
 import { PaymentLogs } from "./PaymentLogs.tsx";
+import { useTranslation } from "react-i18next";
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -40,6 +41,8 @@ export function PaymentsPage() {
   const userRole = useContext(UserContext);
   const navigate = useNavigate();
   const [parentRange, setPaymentRange] = useState<number[]>([0, 100000000]);
+
+  const { t } = useTranslation();
 
   function toggleSelect(id: number) {
     setSelectedKeys((selectedIds) =>
@@ -197,7 +200,7 @@ export function PaymentsPage() {
         <div className="flex flex-row gap-3">
           <AddStudentButton
             onClick={() => setPaymentOpen(!open)}
-            message="Add Payment"
+            message={t("Add_Payment")}
           />
           {userRole?.role === "admin" && (
             <DeleteButton
@@ -237,7 +240,7 @@ export function PaymentsPage() {
         getKey={(p) => p.payment_id}
         columns={[
           {
-            header: "Payment ID",
+            header: t("Payment_ID"),
             render: (s) => (
               <div className="flex items-center justify-center gap-10">
                 {isDelete && (
@@ -253,13 +256,13 @@ export function PaymentsPage() {
               </div>
             ),
           },
-          { header: "Student ID", render: (p) => p.student_id },
-          { header: "Student", render: (p) => p.student },
-          { header: "Payment Period", render: (p) => p.paid_for_period },
-          { header: "Amount (MMK)", render: (p) => p.amount },
-          { header: "Amount Type", render: (p) => p.amountType },
-          { header: "Status", render: (p) => p.status },
-          { header: "Payment Date", render: (p) => p.payment_date },
+          { header: t("Student_ID"), render: (p) => p.student_id },
+          { header: t("Student"), render: (p) => p.student },
+          { header: t("Payment_Period"), render: (p) => p.paid_for_period },
+          { header: t("Amount"), render: (p) => p.amount },
+          { header: t("Amount_Type"), render: (p) => p.amountType },
+          { header: t("Status"), render: (p) => t(`${p.status}`) },
+          { header: t("Payment_Date"), render: (p) => p.payment_date },
           ...(userRole?.role === "admin"
             ? [
                 {

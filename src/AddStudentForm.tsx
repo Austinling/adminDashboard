@@ -3,6 +3,7 @@ import { gradeMap } from "./GradeMap.ts";
 import { classDateArray } from "./ClassDate.ts";
 import { timePeriodArray } from "./TimePeriod.ts";
 import { PopUp } from "./PopUp.tsx";
+import { useTranslation } from "react-i18next";
 
 type StudentForm = {
   onClick: () => void;
@@ -18,6 +19,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
   const [classDate, setClassDate] = useState("天天班");
   const [showPopUp, setPopUp] = useState(false);
   const [showSuccessPopUp, setSuccessPopUp] = useState(false);
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,27 +119,27 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
         className="absolute shadow-lg rounded-2xl flex flex-col bg-white z-40 w-100 h-150 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
       >
         <div className="flex flex-col gap-2 p-5">
-          <label>Name</label>
+          <label>{t("Name")}</label>
           <input
             required
-            placeholder="Name"
+            placeholder={t("Name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="bg-gray-300 p-3"
           ></input>
         </div>
         <div className="flex flex-col gap-2 p-5">
-          <label>Phone Number</label>
+          <label>{t("Phone_Number")}</label>
           <input
             required
-            placeholder="Phone Number"
+            placeholder={t("Phone_Number")}
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             className="bg-gray-300 p-3"
           ></input>
         </div>
         <div className="flex flex-col gap-2  p-5">
-          <label>Grade</label>
+          <label>{t("Grade")}</label>
           <select value={grade} onChange={(e) => setGrade(e.target.value)}>
             {Object.entries(gradeMap).map(([key, value]) => {
               return (
@@ -149,7 +151,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
           </select>
         </div>
         <div className="flex flex-col gap-2  p-5">
-          <label>Class Date</label>
+          <label>{t("Class_Date")}</label>
           <select
             value={classDate}
             onChange={(e) => setClassDate(e.target.value)}
@@ -164,7 +166,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
           </select>
         </div>
         <div className="flex flex-col gap-2  p-5">
-          <label>Time Period</label>
+          <label>{t("Time_Period")}</label>
           <select
             value={timePeriod}
             onChange={(e) => setTimePeriod(e.target.value)}
@@ -184,14 +186,14 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-40 h-10 flex items-center justify-center"
             type="submit"
           >
-            Add Student
+            {t("Add_Student")}
           </button>
           <button
             type="button"
             onClick={onClick}
             className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-30 h-10 flex items-center justify-center"
           >
-            Close
+            {t("Close")}
           </button>
         </div>
       </form>

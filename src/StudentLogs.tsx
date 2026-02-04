@@ -2,6 +2,7 @@ import type { StudentLogType } from "./StudentLogType.ts";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./Authorization";
+import { useTranslation } from "react-i18next";
 
 type StudentLogs = {
   studentId: number | undefined;
@@ -15,6 +16,7 @@ export function StudentLogs({ studentId, onClick }: StudentLogs) {
   const navigate = useNavigate();
 
   const userRole = useContext(UserContext);
+  const { t } = useTranslation();
 
   const fetchStudentLogs = async () => {
     const token = localStorage.getItem("token");
@@ -67,25 +69,25 @@ export function StudentLogs({ studentId, onClick }: StudentLogs) {
               <>
                 <div className="p-3 flex flex-col items-center">
                   <div className="flex gap-3 border-b-2 font-bold mb-2">
-                    <div>{log.action}</div>
+                    <div>{t(`${log.action}`)}</div>
                     <div>{log.created_at}</div>
                     <div>{log.changed_by}</div>
                   </div>
                   <div className="flex flex-col items-center">
                     <div>
-                      <b>Name:</b> {detailsIntoJSON.name}
+                      <b>{t("Name")}:</b> {detailsIntoJSON.name}
                     </div>
                     <div>
-                      <b>Phone Number:</b> {detailsIntoJSON.phoneNumber}
+                      <b>{t("Phone_Number")}:</b> {detailsIntoJSON.phoneNumber}
                     </div>
                     <div>
-                      <b>Grade:</b> {detailsIntoJSON.grade}
+                      <b>{t("Grade")}:</b> {detailsIntoJSON.grade}
                     </div>
                     <div>
-                      <b>Time Period:</b> {detailsIntoJSON.timePeriod}
+                      <b>{t("Time_Period")}:</b> {detailsIntoJSON.timePeriod}
                     </div>
                     <div>
-                      <b>Class Date:</b> {detailsIntoJSON.classDate}
+                      <b>{t("Class_Date")}:</b> {detailsIntoJSON.classDate}
                     </div>
                   </div>
                 </div>
