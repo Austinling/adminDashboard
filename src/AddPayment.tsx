@@ -171,14 +171,14 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
 
       {showPopUp && (
         <PopUp
-          message="Please fill out all fields"
+          message={t("Please_Enter_All_Fields")}
           color="red"
           onOrOff={true}
         />
       )}
 
       {showSuccessPopUp && (
-        <PopUp message="Payment Added" color="green" onOrOff={true} />
+        <PopUp message={t("Success")} color="green" onOrOff={true} />
       )}
 
       <form

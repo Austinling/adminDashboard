@@ -11,7 +11,7 @@ export function Header({ headerShow }: HeaderProps) {
   const { t, i18n } = useTranslation();
   const [isOpen, setOpen] = useState(false);
   return (
-    <div className="h-20 w-full bg-red-300 border-b-2 border-b-white z-50 sticky top-0 flex justify-star items-center gap-3">
+    <div className="h-20 w-full bg-red-300 border-b-2 border-b-white z-50 sticky top-0 flex justify-start items-center gap-3">
       <button
         className="ml-4 transition-all duration-300 ease-in-out transform flex items-center justify-center"
         style={{ transform: isOpen ? "rotate(90deg)" : "rotate(0deg)" }}

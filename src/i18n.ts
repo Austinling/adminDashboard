@@ -62,6 +62,8 @@ i18n.use(initReactI18next).init({
         Login: "Login",
         Username: "Username",
         Password: "Password",
+        Please_Enter_All_Fields: "Please Enter All Fields",
+        Success: "Success",
       },
     },
 
@@ -124,6 +126,8 @@ i18n.use(initReactI18next).init({
         Login: "登录",
         Username: "用户名",
         Password: "密码",
+        Please_Enter_All_Fields: "请输入所有字段",
+        Success: "成功",
       },
     },
   },

@@ -107,11 +107,15 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
       <div className="fixed inset-0 backdrop-blur-lg z-30"></div>
 
       {showPopUp && (
-        <PopUp message="Please enter all fields" color="red" onOrOff={true} />
+        <PopUp
+          message={t("Please_Enter_All_Fields")}
+          color="red"
+          onOrOff={true}
+        />
       )}
 
       {showSuccessPopUp && (
-        <PopUp message="User Added" color="green" onOrOff={true} />
+        <PopUp message={t("Success")} color="green" onOrOff={true} />
       )}
 
       <form
