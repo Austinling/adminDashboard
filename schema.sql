@@ -1,0 +1,7 @@
+PRAGMA defer_foreign_keys=TRUE;
+CREATE TABLE students (   student_id INTEGER PRIMARY KEY AUTOINCREMENT,   name TEXT NOT NULL,   phoneNumber TEXT,   grade TEXT , timePeriod string, classDate string);
+CREATE TABLE payments (   payment_id INTEGER PRIMARY KEY AUTOINCREMENT,   student_id INTEGER NOT NULL,   paid_for_period TEXT NOT NULL,   amount TEXT NOT NULL,    status TEXT NOT NULL,   payment_date TEXT NOT NULL , student TEXT, amountType);
+CREATE TABLE users (   user_id INTEGER PRIMARY KEY AUTOINCREMENT,   email TEXT UNIQUE NOT NULL,   password_hash TEXT NOT NULL,   role TEXT DEFAULT 'user',   created_at TEXT DEFAULT CURRENT_TIMESTAMP );
+CREATE TABLE student_logs (      id INTEGER PRIMARY KEY AUTOINCREMENT,      student_id INTEGER NOT NULL,        action TEXT NOT NULL,      changed_by TEXT,      details TEXT,      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,      FOREIGN KEY(student_id) REFERENCES students(student_id) ON DELETE CASCADE  );
+CREATE TABLE payment_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, payment_id INTEGER, action STRING, changed_by STRING, details STRING, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (payment_id) REFERENCES payments(payment_id) ON DELETE CASCADE );
+CREATE TABLE delete_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, deleted_id INTEGER, type STRING, action STRING, details STRING, changed_by STRING, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);
