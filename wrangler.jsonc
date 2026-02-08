@@ -20,7 +20,7 @@
       "database_id": "ea57c730-ac65-4e30-81e0-3de613f3f637"
     }
 	],
-	"placement": {  "region": "gcp:europe-west1"}
+	"placement": {  "region": "gcp:asia-southeast1"}
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
