@@ -9,6 +9,10 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: npm install
+      - name: Build React App
+        run: npm run build
       - name: Build & Deploy Worker
         uses: cloudflare/wrangler-action@v3
         with:
