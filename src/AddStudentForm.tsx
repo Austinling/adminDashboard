@@ -36,9 +36,6 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
       return;
     }
 
-    setSuccessPopUp(false);
-    setTimeout(() => setSuccessPopUp(true), 0);
-
     const studentResponse = await fetch(`${API_BASE}/students`, {
       method: "POST",
       headers: {
@@ -57,6 +54,9 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
       console.error("Failed to create student");
       return;
     }
+
+    setSuccessPopUp(false);
+    setTimeout(() => setSuccessPopUp(true), 0);
 
     const studentData = await studentResponse.json();
     const newStudentId = studentData.student_id;

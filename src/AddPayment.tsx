@@ -67,9 +67,6 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
       return;
     }
 
-    setSuccessPopUp(false);
-    setTimeout(() => setSuccessPopUp(true), 0);
-
     if (!selectedStudent) {
       alert("Please select a student from the list");
       return;
@@ -96,6 +93,11 @@ export function AddPayment({ onClick, onSubmit }: PaymentForm) {
     const paymentData = await paymentResponse.json();
     const newPaymentId = paymentData.payment_id;
     const newStudent = paymentData.student;
+
+    if (paymentResponse.ok) {
+      setSuccessPopUp(false);
+      setTimeout(() => setSuccessPopUp(true), 0);
+    }
 
     const changedBy = localStorage.getItem("email") || "Unknown Admin";
     const action = "CREATED";
