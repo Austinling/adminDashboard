@@ -43,9 +43,7 @@ This is used for all API requests (students, payments, login).
 - `npm run dev` – start local dev server
 - `npm run build` – typecheck + production build
 - `npm run preview` – build + preview locally
-- `npm run lint` – run ESLint
 - `npm run deploy` – build + `wrangler deploy`
-- `npm run cf-typegen` – generate Cloudflare types
 
 ## Auth Notes
 
