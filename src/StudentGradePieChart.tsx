@@ -5,6 +5,10 @@ import type { Student } from "./StudentType";
 
 const RADIAN = Math.PI / 180;
 const GRADE_COLORS: Record<string, string> = {
+  幼一: "#FFD3E2", // Soft Rose
+  幼二: "#FFF3BF", // Pale Sun
+  幼三: "#D0EBFF", // Sky Mist
+  幼四: "#E5DBFF", // Lavender Cloud
   "一年级（上）": "#FF6B6B", // Light Red
   "一年级（下）": "#FF922B", // Orange
   "二年级（上）": "#FCC419", // Yellow

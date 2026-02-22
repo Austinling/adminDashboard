@@ -81,7 +81,7 @@ export function Filter({
           onClick={() => setOpen(false)}
         />
         <div className="flex flex-col gap-3">
-          <h2 className="border-b-2 w-full text-center">{t("Grade")}</h2>
+          <h2 className="w-full text-center">{t("Grade")}</h2>
           <div className="grid grid-cols-3 gap-4 p-4">
             {Object.entries(gradeMap).map(([key, value]) => {
               const checked = selectedGrades.includes(value);
