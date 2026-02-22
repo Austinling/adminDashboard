@@ -1,4 +1,8 @@
 export const gradeMap: Record<string, string> = {
+  "you yi": "幼一",
+  "you er": "幼二",
+  "you san": "幼三",
+  "you si": "幼四",
   "yi nian ji shang": "一年级（上）",
   "yi nian ji xia": "一年级（下）",
   "er nian ji shang": "二年级（上）",

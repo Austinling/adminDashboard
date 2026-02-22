@@ -14,7 +14,7 @@ export function AddStudentForm({ onClick, onSubmit }: StudentForm) {
   const API_BASE = import.meta.env.VITE_API_BASE;
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [grade, setGrade] = useState("一年级（上）");
+  const [grade, setGrade] = useState("幼一");
   const [timePeriod, setTimePeriod] = useState(timePeriodArray[0] || "");
   const [classDate, setClassDate] = useState("天天班");
   const [showPopUp, setPopUp] = useState(false);
