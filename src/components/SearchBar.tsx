@@ -1,4 +1,4 @@
-import search from "./assets/images/search.png";
+import search from "../assets/images/search.png";
 import { useTranslation } from "react-i18next";
 
 type searchBarType = {

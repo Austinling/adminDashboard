@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { gradeMap } from "./GradeMap.ts";
-import { classDateArray } from "./ClassDate.ts";
-import { timePeriodArray } from "./TimePeriod.ts";
-import { PopUp } from "./PopUp.tsx";
+import { gradeMap } from "../types/GradeMap.ts";
+import { classDateArray } from "../types/ClassDate.ts";
+import { timePeriodArray } from "../types/TimePeriod.ts";
+import { PopUp } from "../components/PopUp.tsx";
 import { useTranslation } from "react-i18next";
 
 type StudentForm = {

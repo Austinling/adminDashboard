@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { PopUp } from "./PopUp.tsx";
-import { Calendar } from "./Calendar.tsx";
-import { CalendarButton } from "./CalendarButton.tsx";
-import type { Student } from "./StudentType.ts";
+import { PopUp } from "../components/PopUp.tsx";
+import { Calendar } from "../components/Calendar.tsx";
+import { CalendarButton } from "../components/CalendarButton.tsx";
+import type { Student } from "../types/StudentType.ts";
 import { useTranslation } from "react-i18next";
 
 type PaymentForm = {

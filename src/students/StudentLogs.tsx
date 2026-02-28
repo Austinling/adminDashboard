@@ -1,29 +1,29 @@
-import type { PaymentLogType } from "./PaymentLogType.ts";
+import type { StudentLogType } from "../types/StudentLogType.ts";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./Authorization";
+import { UserContext } from "../layout/Authorization.tsx";
 import { useTranslation } from "react-i18next";
 
 type StudentLogs = {
-  paymentId: number | undefined;
+  studentId: number | undefined;
   onClick: () => void;
 };
 
-export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
-  const [paymentLogs, setPaymentLogs] = useState<PaymentLogType[]>([]);
-  const { t } = useTranslation();
+export function StudentLogs({ studentId, onClick }: StudentLogs) {
+  const [studentLogs, setStudentLogs] = useState<StudentLogType[]>([]);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
 
   const userRole = useContext(UserContext);
+  const { t } = useTranslation();
 
-  const fetchPaymentLogs = async () => {
+  const fetchStudentLogs = async () => {
     const token = localStorage.getItem("token");
 
     try {
       const res = await fetch(
-        `${API_BASE}/payment_logs?payment_id=${paymentId}`,
+        `${API_BASE}/student_logs?student_id=${studentId}`,
         {
           method: "GET",
           headers: {
@@ -42,18 +42,18 @@ export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
       }
 
       const data = await res.json();
-      setPaymentLogs(data);
+      setStudentLogs(data);
     } catch (err) {
       console.error("Fetch error:", err);
     }
   };
 
   useEffect(() => {
-    fetchPaymentLogs();
+    fetchStudentLogs();
   }, []);
 
-  const filteredLogs = paymentLogs.filter((log) => {
-    return log.payment_id == paymentId;
+  const filteredLogs = studentLogs.filter((log) => {
+    return log.student_id == studentId;
   });
 
   return (
@@ -74,38 +74,20 @@ export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
                     <div>{log.changed_by}</div>
                   </div>
                   <div className="flex flex-col items-center">
-                    <div className="flex flex-col text-center">
-                      <div>
-                        <b>{t("Student")}:</b>
-                      </div>
-                      <div className="text-sm "> {detailsIntoJSON.student}</div>
-                    </div>
-                    <div className="flex flex-col text-center">
-                      <div>
-                        <b> {t("Paid_For_Period")}:</b>
-                      </div>
-                      <div className="text-sm ">
-                        {detailsIntoJSON.paid_for_period}
-                      </div>
+                    <div>
+                      <b>{t("Name")}:</b> {detailsIntoJSON.name}
                     </div>
                     <div>
-                      <b>{t("Amount")}:</b> {detailsIntoJSON.amount}
-                    </div>
-                    <div className="flex flex-col text-center">
-                      <div>
-                        <b>{t("Amount_Type")}:</b>
-                      </div>
-                      <div className="text-sm ">
-                        {" "}
-                        {detailsIntoJSON.amountType}
-                      </div>
+                      <b>{t("Phone_Number")}:</b> {detailsIntoJSON.phoneNumber}
                     </div>
                     <div>
-                      <b>{t("Status")}:</b> {detailsIntoJSON.status}
+                      <b>{t("Grade")}:</b> {detailsIntoJSON.grade}
                     </div>
                     <div>
-                      <b>{t("Payment_Date")}: </b>
-                      {detailsIntoJSON.payment_date}
+                      <b>{t("Time_Period")}:</b> {detailsIntoJSON.timePeriod}
+                    </div>
+                    <div>
+                      <b>{t("Class_Date")}:</b> {detailsIntoJSON.classDate}
                     </div>
                   </div>
                 </div>
@@ -118,7 +100,7 @@ export function PaymentLogs({ paymentId, onClick }: StudentLogs) {
           onClick={onClick}
           className="bg-[linear-gradient(90deg,rgba(242,128,128,1)_0%,rgba(247,230,230,1)_67%)] cursor-pointer p-4 rounded-4xl w-30 h-10 flex items-center justify-center mb-4"
         >
-          {t("Close")}
+          Close
         </button>
       </div>
     </>

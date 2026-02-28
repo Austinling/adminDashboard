@@ -1,8 +1,8 @@
-import { gradeMap } from "./GradeMap.ts";
+import { gradeMap } from "../types/GradeMap.ts";
 import { useState } from "react";
-import filter from "./assets/images/filter.png";
-import { timePeriodArray } from "./TimePeriod.ts";
-import { classDateArray } from "./ClassDate.ts";
+import filter from "../assets/images/filter.png";
+import { timePeriodArray } from "../types/TimePeriod.ts";
+import { classDateArray } from "../types/ClassDate.ts";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -69,7 +69,7 @@ export function Filter({
       </button>
 
       <div
-        className={`absolute w-100 h-150 bg-white border-2 top-10 flex flex-col items-center justify-center transform transition-all duration-300 ease-out z-50
+        className={`absolute w-100 h-170 bg-white border-2 top-10 flex flex-col items-center justify-center transform transition-all duration-300 ease-out z-50
       ${
         open
           ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"

@@ -1,16 +1,16 @@
-import { Table } from "./Table.tsx";
-import type { Payment } from "./PaymentType.ts";
+import { Table } from "../components/Table.tsx";
+import type { Payment } from "../types/PaymentType.ts";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./Authorization.tsx";
-import { SearchBar } from "./SearchBar.tsx";
-import { AddStudentButton } from "./AddStudentButton.tsx";
+import { UserContext } from "../layout/Authorization.tsx";
+import { SearchBar } from "../components/SearchBar.tsx";
+import { AddStudentButton } from "../students/AddStudentButton.tsx";
 import { AddPayment } from "./AddPayment.tsx";
-import { DeleteButton } from "./DeleteButton.tsx";
+import { DeleteButton } from "../components/DeleteButton.tsx";
 import { PaymentFilter } from "./PaymentFilter.tsx";
 import { PaymentFilterButton } from "./PaymentFilterButton.tsx";
 import { EditPaymentForm } from "./EditPaymentForm.tsx";
-import { EditButton } from "./EditButton.tsx";
+import { EditButton } from "../components/EditButton.tsx";
 import { PaymentLogs } from "./PaymentLogs.tsx";
 import { useTranslation } from "react-i18next";
 
