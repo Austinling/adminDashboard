@@ -1,4 +1,4 @@
-import rongLogo from "./assets/images/rongbg.png";
+import rongLogo from "../assets/images/rongbg.png";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

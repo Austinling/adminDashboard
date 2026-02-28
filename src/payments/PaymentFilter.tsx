@@ -1,8 +1,8 @@
 import Slider from "rc-slider";
 import { useState, useEffect } from "react";
 import "rc-slider/assets/index.css";
-import { CalendarButton } from "./CalendarButton";
-import { Calendar } from "./Calendar";
+import { CalendarButton } from "../components/CalendarButton";
+import { Calendar } from "../components/Calendar";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

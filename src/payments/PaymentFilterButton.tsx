@@ -1,4 +1,4 @@
-import filter from "./assets/images/filter.png";
+import filter from "../assets/images/filter.png";
 import { useTranslation } from "react-i18next";
 
 type PaymentButtonProp = {

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import rightArrow from "./assets/images/right-arrow.png";
+import rightArrow from "../assets/images/right-arrow.png";
 
 type CalendarRange = {
   from?: Date;

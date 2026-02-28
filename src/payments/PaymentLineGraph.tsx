@@ -8,7 +8,7 @@ import {
   Legend,
 } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
-import type { Payment } from "./PaymentType";
+import type { Payment } from "../types/PaymentType";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 

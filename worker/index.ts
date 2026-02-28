@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
-import type { StudentLogType } from "../src/StudentLogType";
-import type { PaymentLogType } from "../src/PaymentLogType";
+import type { StudentLogType } from "../src/types/StudentLogType";
+import type { PaymentLogType } from "../src/types/PaymentLogType";
 
 type Env = {
   DB: D1Database; // Cloudflare D1 binding

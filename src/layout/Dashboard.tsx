@@ -1,15 +1,15 @@
-import { StudentGradePieChart } from "./StudentGradePieChart.tsx";
-import type { Student } from "./StudentType.ts";
-import type { Payment } from "./PaymentType.ts";
+import { StudentGradePieChart } from "../students/StudentGradePieChart.tsx";
+import type { Student } from "../types/StudentType.ts";
+import type { Payment } from "../types/PaymentType.ts";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { PaymentStatusGraph } from "./PaymentStatusGraph.tsx";
-import { PaymentLineGraph } from "./PaymentLineGraph.tsx";
-import { PaymentLineDropDown } from "./PaymentLineDropDown.tsx";
-import { StudentPieChartDropDown } from "./StudentPieChartDropDown.tsx";
-import { Calendar } from "./Calendar.tsx";
-import { CalendarButton } from "./CalendarButton.tsx";
-import { MonthOrDayDropDown } from "./MonthOrDayDropDown.tsx";
+import { PaymentStatusGraph } from "../payments/PaymentStatusGraph.tsx";
+import { PaymentLineGraph } from "../payments/PaymentLineGraph.tsx";
+import { PaymentLineDropDown } from "../payments/PaymentLineDropDown.tsx";
+import { StudentPieChartDropDown } from "../students/StudentPieChartDropDown.tsx";
+import { Calendar } from "../components/Calendar.tsx";
+import { CalendarButton } from "../components/CalendarButton.tsx";
+import { MonthOrDayDropDown } from "../components/MonthOrDayDropDown.tsx";
 import { useTranslation } from "react-i18next";
 
 export function Dashboard() {

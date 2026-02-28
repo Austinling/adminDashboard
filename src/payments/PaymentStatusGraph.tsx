@@ -1,4 +1,4 @@
-import type { Payment } from "./PaymentType";
+import type { Payment } from "../types/PaymentType";
 import {
   BarChart,
   Legend,

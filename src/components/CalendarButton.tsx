@@ -1,4 +1,4 @@
-import calendar from "./assets/images/calendar.png";
+import calendar from "../assets/images/calendar.png";
 
 type Calendar = {
   onClick: () => void;

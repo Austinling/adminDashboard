@@ -13,8 +13,8 @@ export function StudentPieChartDropDown({
   return (
     <select value={mode} onChange={(e) => setMode(e.target.value)}>
       <option value="Grade">{t("Grade")}</option>
-      <option value="Time Period">{t("Time Period")}</option>
-      <option value="Class Date">{t("Class Date")}</option>
+      <option value="Time Period">{t("Time_Period")}</option>
+      <option value="Class Date">{t("Class_Date")}</option>
     </select>
   );
 }

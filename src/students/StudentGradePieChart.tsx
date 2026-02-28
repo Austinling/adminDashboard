@@ -1,7 +1,7 @@
 import { Pie, PieChart, Sector, Legend } from "recharts";
 import type { PieLabelRenderProps, PieSectorShapeProps } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
-import type { Student } from "./StudentType";
+import type { Student } from "../types/StudentType";
 
 const RADIAN = Math.PI / 180;
 const GRADE_COLORS: Record<string, string> = {
